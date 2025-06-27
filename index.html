@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مركز تصاميم</title>
+    
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons for modern icons -->
+    <script src="https://unpkg.com/lucide-react@0.294.0/dist/lucide-react.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Custom Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* Apply a clean, modern font */
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        /* Custom scrollbar for the dashboard items */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none;   /* Firefox */
+        }
+        
+        /* Animation for the sidebar */
+        .sidebar-enter {
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        .sidebar-exit {
+            transform: translateX(0);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        /* Helper to hide elements */
+        .hidden {
+            display: none;
+        }
+
+        /* Spinner for loading states */
+        .loader {
+            width: 48px;
+            height: 48px;
+            border: 5px solid #FFF;
+            border-bottom-color: #4f46e5;
+            border-radius: 50%;
+            display: inline-block;
+            box-sizing: border-box;
+            animation: rotation 1s linear infinite;
+        }
+
+        @keyframes rotation {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- Loading Spinner Overlay -->
+    <div id="loading-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Login Page -->
+    <div id="login-page" class="min-h-screen flex flex-col">
+        <header class="p-4 bg-white shadow-md">
+            <img src="https://i.postimg.cc/RCW1Nkw5/IMG.png" alt="Logo" class="h-10 mx-auto">
+        </header>
+
+        <main class="flex-grow flex items-center justify-center">
+            <div id="login-prompt" class="text-center">
+                <p class="text-lg mb-4">اضغط على الأيقونة لتسجيل الدخول</p>
+                <button id="show-login-form-btn" class="bg-indigo-600 text-white p-4 rounded-full shadow-lg hover:bg-indigo-700 transition-transform transform hover:scale-110">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                </button>
+            </div>
+            
+            <form id="login-form" class="hidden w-full max-w-sm p-8 space-y-6 bg-white rounded-xl shadow-lg">
+                <h2 class="text-2xl font-bold text-center">تسجيل الدخول أو إنشاء حساب</h2>
+                <div class="space-y-4">
+                    <input type="email" id="email" placeholder="البريد الإلكتروني" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                    <input type="password" id="password" placeholder="كلمة المرور" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                </div>
+                 <div id="login-error" class="text-red-500 text-sm text-center"></div>
+                <button type="submit" class="w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 transition">دخول</button>
+            </form>
+        </main>
+    </div>
+
+    <!-- Main App Dashboard -->
+    <div id="dashboard-page" class="hidden">
+        <!-- Header Bar -->
+        <header class="bg-white shadow-sm sticky top-0 z-30 flex items-center justify-between p-3 h-16">
+            <button id="sidebar-toggle-btn" class="p-2 rounded-full hover:bg-gray-100">
+                <i data-lucide="menu" class="w-6 h-6"></i>
+            </button>
+            <img src="https://i.postimg.cc/1tyC8c1C/IMG.jpg" alt="Logo" class="h-9">
+        </header>
+
+        <!-- Main Content Grid -->
+        <main class="p-4">
+            <div class="flex overflow-x-auto space-x-4 space-x-reverse pb-4 no-scrollbar">
+                <!-- Dashboard Items will be injected here by JavaScript -->
+            </div>
+        </main>
+    </div>
+    
+    <!-- Content Display Page -->
+    <div id="content-page" class="hidden p-4">
+        <header class="flex items-center mb-4">
+            <button id="back-to-dashboard-btn" class="p-2 rounded-full hover:bg-gray-200 ml-4">
+                 <i data-lucide="arrow-right" class="w-6 h-6"></i>
+            </button>
+            <h2 id="content-title" class="text-2xl font-bold"></h2>
+        </header>
+        <div id="content-display" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <!-- Content items (images/videos) will be injected here -->
+        </div>
+    </div>
+
+
+    <!-- Sidebar -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden"></div>
+    <nav id="sidebar" class="fixed top-0 right-0 h-full w-72 bg-white shadow-xl z-40 transform translate-x-full transition-transform duration-300 ease-in-out">
+        <div class="p-6">
+            <div class="flex flex-col items-center text-center border-b pb-6">
+                <div class="w-24 h-24 rounded-full bg-red-100 flex items-center justify-center text-5xl mb-3">🍓</div>
+                <p id="user-email" class="font-semibold text-gray-700"></p>
+                <p class="text-sm text-gray-500">كلمة المرور: ********</p>
+            </div>
+            <div class="mt-6 space-y-2">
+                 <a href="#" class="flex items-center p-3 rounded-md hover:bg-gray-100 transition-colors">
+                    <i data-lucide="shield" class="w-5 h-5 ml-3 text-gray-600"></i>
+                    <span>سياسة الخصوصية</span>
+                </a>
+                 <a href="#" class="flex items-center p-3 rounded-md hover:bg-gray-100 transition-colors">
+                    <i data-lucide="file-text" class="w-5 h-5 ml-3 text-gray-600"></i>
+                    <span>اتفاقية المستخدم</span>
+                </a>
+                 <button id="logout-btn" class="w-full flex items-center p-3 rounded-md hover:bg-red-50 text-red-600 transition-colors">
+                    <i data-lucide="log-out" class="w-5 h-5 ml-3"></i>
+                    <span>تسجيل الخروج</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { 
+            getAuth, 
+            onAuthStateChanged, 
+            createUserWithEmailAndPassword, 
+            signInWithEmailAndPassword, 
+            signOut,
+            setPersistence,
+            browserLocalPersistence
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { 
+            getFirestore, 
+            collection, 
+            getDocs,
+            setLogLevel
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // IMPORTANT: Replace with your actual Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCDOnNTsdEL_NcMWc30IanC01OPWj-gao8",
+            authDomain: "mahmoud-17a51.firebaseapp.com",
+            databaseURL: "https://mahmoud-17a51-default-rtdb.firebaseio.com",
+            projectId: "mahmoud-17a51",
+            storageBucket: "mahmoud-17a51.firebasestorage.app",
+            messagingSenderId: "990895559173",
+            appId: "1:990895559173:web:924f6809c78457f4d7426c",
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        // Enable debug logging for Firestore
+        setLogLevel('debug');
+
+        // DOM Elements
+        const loadingOverlay = document.getElementById('loading-overlay');
+        const loginPage = document.getElementById('login-page');
+        const dashboardPage = document.getElementById('dashboard-page');
+        const contentPage = document.getElementById('content-page');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebar-overlay');
+        const loginForm = document.getElementById('login-form');
+        const showLoginFormBtn = document.getElementById('show-login-form-btn');
+        const loginPrompt = document.getElementById('login-prompt');
+        const loginError = document.getElementById('login-error');
+
+
+        // Dashboard categories definition
+        const dashboardCategories = [
+            { id: 'banners', title: 'مركز البنرات', icon: 'image' },
+            { id: 'celebrityGifts', title: 'هدايا المشاهير', icon: 'gift' },
+            { id: 'roomBackgrounds', title: 'خلفيات روم', icon: 'wallpaper' },
+            { id: 'promoVideos', title: 'فيديو ترويجي', icon: 'video' },
+            { id: 'shippingSchedule', title: 'جدول الشحن', icon: 'table' },
+            { id: 'animatedImages', title: 'صور متحركة', icon: 'film' }
+        ];
+
+        // --- AUTHENTICATION ---
+        
+        // This is the main controller of the app. It listens for auth changes.
+        onAuthStateChanged(auth, user => {
+            if (user) {
+                // User is signed in
+                showDashboard(user);
+            } else {
+                // User is signed out
+                showLoginPage();
+            }
+            loadingOverlay.classList.add('hidden');
+        });
+
+        // Handle login/signup form submission
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            loadingOverlay.classList.remove('hidden');
+            loginError.textContent = '';
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                // Try to sign in the user
+                await signInWithEmailAndPassword(auth, email, password);
+            } catch (error) {
+                // If user doesn't exist, create a new account
+                if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
+                    try {
+                        await createUserWithEmailAndPassword(auth, email, password);
+                    } catch (signupError) {
+                        console.error("Signup Error:", signupError);
+                        loginError.textContent = 'حدث خطأ أثناء إنشاء الحساب.';
+                        loadingOverlay.classList.add('hidden');
+                    }
+                } else {
+                    console.error("Login Error:", error);
+                    loginError.textContent = 'البريد الإلكتروني أو كلمة المرور غير صحيحة.';
+                    loadingOverlay.classList.add('hidden');
+                }
+            }
+        });
+
+        // Logout button
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            loadingOverlay.classList.remove('hidden');
+            signOut(auth);
+        });
+
+        // --- UI DISPLAY LOGIC ---
+
+        function showLoginPage() {
+            loginPage.classList.remove('hidden');
+            dashboardPage.classList.add('hidden');
+            contentPage.classList.add('hidden');
+            closeSidebar();
+            loginPrompt.classList.remove('hidden');
+            loginForm.classList.add('hidden');
+        }
+
+        function showDashboard(user) {
+            loginPage.classList.add('hidden');
+            contentPage.classList.add('hidden');
+            dashboardPage.classList.remove('hidden');
+            
+            // Populate user info in sidebar
+            document.getElementById('user-email').textContent = user.email;
+            
+            // Populate dashboard items
+            const container = dashboardPage.querySelector('.flex.overflow-x-auto');
+            container.innerHTML = ''; // Clear previous items
+            dashboardCategories.forEach(cat => {
+                const card = document.createElement('div');
+                card.className = 'flex-shrink-0 w-32 h-32 bg-white rounded-xl shadow p-4 flex flex-col items-center justify-center text-center cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all';
+                card.innerHTML = `
+                    <i data-lucide="${cat.icon}" class="w-10 h-10 text-indigo-500 mb-2"></i>
+                    <span class="text-sm font-semibold">${cat.title}</span>
+                `;
+                card.addEventListener('click', () => showContentPage(cat.id, cat.title));
+                container.appendChild(card);
+            });
+            lucide.createIcons(); // Re-render icons
+        }
+        
+        async function showContentPage(categoryId, categoryTitle) {
+            loadingOverlay.classList.remove('hidden');
+            dashboardPage.classList.add('hidden');
+            contentPage.classList.remove('hidden');
+            
+            document.getElementById('content-title').textContent = categoryTitle;
+            const display = document.getElementById('content-display');
+            display.innerHTML = '<p>جاري تحميل المحتوى...</p>';
+
+            try {
+                // This is where we fetch data from Firestore
+                const querySnapshot = await getDocs(collection(db, "content", categoryId, "items"));
+                const items = [];
+                querySnapshot.forEach((doc) => {
+                    items.push({ id: doc.id, ...doc.data() });
+                });
+                
+                renderContent(items, categoryId);
+                
+            } catch (error) {
+                console.error("Error fetching content: ", error);
+                display.innerHTML = '<p class="text-red-500">حدث خطأ أثناء تحميل المحتوى. تأكد من أن قاعدة البيانات مهيئة بشكل صحيح.</p>';
+            } finally {
+                loadingOverlay.classList.add('hidden');
+            }
+        }
+        
+        // Renders the fetched content based on its type and category
+        function renderContent(items, categoryId) {
+            const display = document.getElementById('content-display');
+            if (items.length === 0) {
+                display.innerHTML = '<p>لا يوجد محتوى في هذا القسم حاليًا.</p>';
+                return;
+            }
+            
+            display.innerHTML = ''; // Clear loading message
+            
+            items.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-lg shadow overflow-hidden transform hover:shadow-xl transition-shadow duration-300';
+                
+                let contentHTML = '';
+                
+                // --- Content Display Logic ---
+                // Here we determine how to display each item.
+                // The size and type depend on the category.
+                
+                if (item.type === 'video') {
+                    // For videos, use a <video> tag
+                    let videoClass = "w-full h-full object-cover";
+                    if (['promoVideos', 'celebrityGifts', 'roomBackgrounds'].includes(categoryId)) {
+                        videoClass += " aspect-[9/16]"; // Shorts format
+                    }
+                    contentHTML = `<video src="${item.url}" class="${videoClass}" controls playsinline loop></video>`;
+                } else {
+                    // For images, use an <img> tag
+                    let imgClass = "w-full object-cover";
+                    if (categoryId === 'banners') {
+                         imgClass += " aspect-[1080/576]"; // Banner format
+                    } else if (['shippingSchedule', 'animatedImages'].includes(categoryId)) {
+                         imgClass += " aspect-square"; // Instagram post format
+                    } else {
+                         imgClass += " aspect-[9/16]"; // Default to shorts format
+                    }
+                    contentHTML = `<img src="${item.url}" alt="Content image" class="${imgClass}" onerror="this.parentElement.innerHTML = '<div class=\'p-4 text-red-500\'>فشل تحميل الصورة</div>';">`;
+                }
+                
+                card.innerHTML = contentHTML;
+                display.appendChild(card);
+            });
+        }
+
+
+        // --- EVENT LISTENERS ---
+
+        // Show the login form when the mail icon is clicked
+        showLoginFormBtn.addEventListener('click', () => {
+            loginPrompt.classList.add('hidden');
+            loginForm.classList.remove('hidden');
+        });
+        
+        // Go back from content page to dashboard
+        document.getElementById('back-to-dashboard-btn').addEventListener('click', () => {
+            showDashboard(auth.currentUser);
+        });
+
+        // Sidebar toggle logic
+        const sidebarToggleBtn = document.getElementById('sidebar-toggle-btn');
+        sidebarToggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            sidebar.classList.toggle('translate-x-full');
+            sidebarOverlay.classList.toggle('hidden');
+        });
+        
+        sidebarOverlay.addEventListener('click', closeSidebar);
+
+        function closeSidebar() {
+            sidebar.classList.add('translate-x-full');
+            sidebarOverlay.classList.add('hidden');
+        }
+        
+        // --- INITIALIZATION ---
+        
+        // On initial load, show the loading spinner until Firebase Auth is ready.
+        loadingOverlay.classList.remove('hidden');
+        lucide.createIcons();
+    </script>
+</body>
+</html>
+
