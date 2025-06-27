@@ -9,7 +9,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Lucide Icons for modern icons -->
-    <script src="https://unpkg.com/lucide-react@0.294.0/dist/lucide-react.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     
     <!-- Custom Google Fonts -->
@@ -18,172 +17,174 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 
     <style>
-        /* Apply a clean, modern font */
-        body {
-            font-family: 'Cairo', sans-serif;
-            background-color: #f8f9fa;
-        }
-
-        /* Custom scrollbar for the dashboard items */
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .no-scrollbar {
-            -ms-overflow-style: none; /* IE and Edge */
-            scrollbar-width: none;   /* Firefox */
-        }
-        
-        /* Animation for the sidebar */
-        .sidebar-enter {
-            transform: translateX(100%);
-            transition: transform 0.3s ease-in-out;
-        }
-        .sidebar-exit {
-            transform: translateX(0);
-            transition: transform 0.3s ease-in-out;
-        }
-
-        /* Helper to hide elements */
-        .hidden {
-            display: none;
-        }
-
-        /* Spinner for loading states */
+        body { font-family: 'Cairo', sans-serif; background-color: #f8f9fa; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .hidden { display: none; }
         .loader {
-            width: 48px;
-            height: 48px;
-            border: 5px solid #FFF;
-            border-bottom-color: #4f46e5;
-            border-radius: 50%;
-            display: inline-block;
-            box-sizing: border-box;
+            width: 48px; height: 48px; border: 5px solid #FFF;
+            border-bottom-color: #4f46e5; border-radius: 50%;
+            display: inline-block; box-sizing: border-box;
             animation: rotation 1s linear infinite;
         }
-
         @keyframes rotation {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(360deg);
-            }
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
+        #lightbox-overlay { cursor: pointer; }
+        #lightbox-content { max-width: 90vw; max-height: 90vh; }
+        #lightbox-content img, #lightbox-content video {
+            width: auto; height: auto; max-width: 100%; max-height: 100%; object-fit: contain;
+        }
+        /* Toast Notification Styles */
+        #toast {
+            position: fixed; bottom: -100px; left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 24px; border-radius: 8px;
+            color: white; font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: bottom 0.5s ease-in-out;
+            z-index: 100;
+        }
+        #toast.show { bottom: 30px; }
+        #toast.success { background-color: #28a745; }
+        #toast.error { background-color: #dc3545; }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
 
-    <!-- Loading Spinner Overlay -->
+    <!-- Overlays and Global Elements -->
     <div id="loading-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
         <div class="loader"></div>
     </div>
+    <div id="lightbox-overlay" class="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4 hidden">
+        <div id="lightbox-content" class="relative"></div>
+    </div>
+    <div id="toast"></div>
 
-    <!-- Login Page -->
-    <div id="login-page" class="min-h-screen flex flex-col">
-        <header class="p-4 bg-white shadow-md">
-            <img src="https://i.postimg.cc/RCW1Nkw5/IMG.png" alt="Logo" class="h-10 mx-auto">
-        </header>
-
-        <main class="flex-grow flex items-center justify-center">
-            <div id="login-prompt" class="text-center">
-                <p class="text-lg mb-4">اضغط على الأيقونة لتسجيل الدخول</p>
-                <button id="show-login-form-btn" class="bg-indigo-600 text-white p-4 rounded-full shadow-lg hover:bg-indigo-700 transition-transform transform hover:scale-110">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                </button>
-            </div>
-            
-            <form id="login-form" class="hidden w-full max-w-sm p-8 space-y-6 bg-white rounded-xl shadow-lg">
-                <h2 class="text-2xl font-bold text-center">تسجيل الدخول أو إنشاء حساب</h2>
-                <div class="space-y-4">
-                    <input type="email" id="email" placeholder="البريد الإلكتروني" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
-                    <input type="password" id="password" placeholder="كلمة المرور" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+    <!-- App Container -->
+    <div id="app-container" class="relative min-h-screen">
+        <!-- Login Page -->
+        <div id="login-page" class="min-h-screen flex flex-col hidden">
+            <header class="p-4 bg-white shadow-md"><img src="https://i.postimg.cc/1tyC8c1C/IMG.jpg" alt="Logo" class="h-10 mx-auto"></header>
+            <main class="flex-grow flex items-center justify-center">
+                <div id="login-prompt" class="text-center">
+                    <p class="text-lg mb-4">اضغط على الأيقونة لتسجيل الدخول</p>
+                    <button id="show-login-form-btn" class="bg-indigo-600 text-white p-4 rounded-full shadow-lg hover:bg-indigo-700 transition-transform transform hover:scale-110">
+                        <i data-lucide="mail" class="w-8 h-8"></i>
+                    </button>
                 </div>
-                 <div id="login-error" class="text-red-500 text-sm text-center"></div>
-                <button type="submit" class="w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 transition">دخول</button>
-            </form>
-        </main>
-    </div>
+                <form id="login-form" class="hidden w-full max-w-sm p-8 space-y-6 bg-white rounded-xl shadow-lg">
+                    <h2 class="text-2xl font-bold text-center">تسجيل الدخول أو إنشاء حساب</h2>
+                    <div class="space-y-4">
+                        <input type="email" id="email" placeholder="البريد الإلكتروني" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                        <input type="password" id="password" placeholder="كلمة المرور" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                    </div>
+                    <div id="login-error" class="text-red-500 text-sm text-center"></div>
+                    <button type="submit" class="w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 transition">دخول</button>
+                </form>
+            </main>
+        </div>
 
-    <!-- Main App Dashboard -->
-    <div id="dashboard-page" class="hidden">
-        <!-- Header Bar -->
-        <header class="bg-white shadow-sm sticky top-0 z-30 flex items-center justify-between p-3 h-16">
-            <button id="sidebar-toggle-btn" class="p-2 rounded-full hover:bg-gray-100">
-                <i data-lucide="menu" class="w-6 h-6"></i>
-            </button>
-            <img src="https://i.postimg.cc/1tyC8c1C/IMG.jpg" alt="Logo" class="h-9">
-        </header>
+        <!-- Main App (Post-Login) -->
+        <div id="main-app" class="hidden">
+            <header class="bg-white shadow-sm sticky top-0 z-30 flex items-center justify-between p-3 h-16">
+                <button id="sidebar-toggle-btn" class="p-2 rounded-full hover:bg-gray-100"><i data-lucide="menu" class="w-6 h-6"></i></button>
+                <img src="https://i.postimg.cc/1tyC8c1C/IMG.jpg" alt="Logo" class="h-9">
+                <div class="w-10"></div>
+            </header>
 
-        <!-- Main Content Grid -->
-        <main class="p-4">
-            <div class="flex overflow-x-auto space-x-4 space-x-reverse pb-4 no-scrollbar">
-                <!-- Dashboard Items will be injected here by JavaScript -->
+            <!-- Page Content Area -->
+            <div id="page-content">
+                <!-- Dashboard -->
+                <div id="dashboard-page" class="hidden">
+                    <main class="p-4">
+                        <div class="flex overflow-x-auto space-x-4 space-x-reverse pb-4 no-scrollbar"></div>
+                        <div class="flex justify-center my-6"><img src="https://i.postimg.cc/1tyC8c1C/IMG.jpg" alt="Main Logo" class="h-16"></div>
+                    </main>
+                    <footer class="text-center p-4 text-gray-500 text-sm"><p>يوجد تصاميم كل شيء يخص الدردشه الصوتيه</p></footer>
+                </div>
+                
+                <!-- Content Display -->
+                <div id="content-page" class="hidden p-4">
+                    <header class="flex items-center mb-4">
+                        <button id="back-to-dashboard-btn" class="p-2 rounded-full hover:bg-gray-200 ml-4"><i data-lucide="arrow-right" class="w-6 h-6"></i></button>
+                        <h2 id="content-title" class="text-2xl font-bold"></h2>
+                    </header>
+                    <div id="content-display" class="grid grid-cols-2 gap-4"></div>
+                </div>
+
+                <!-- Wallet -->
+                <div id="wallet-page" class="hidden p-6">
+                    <header class="flex items-center mb-6">
+                        <button class="back-btn p-2 rounded-full hover:bg-gray-200 ml-4"><i data-lucide="arrow-right" class="w-6 h-6"></i></button>
+                        <h2 class="text-2xl font-bold">المحفظة</h2>
+                    </header>
+                    <div class="bg-white p-8 rounded-xl shadow-lg text-center">
+                        <i data-lucide="wallet" class="w-16 h-16 mx-auto text-indigo-500 mb-4"></i>
+                        <p class="text-lg text-gray-600 mb-2">رصيدك الحالي</p>
+                        <p id="wallet-balance" class="text-4xl font-bold text-gray-800 mb-6">$0.00</p>
+                        <button id="charge-balance-btn" class="w-full bg-indigo-600 text-white py-3 rounded-md hover:bg-indigo-700 transition">شحن الرصيد عبر الدعم</button>
+                    </div>
+                </div>
+                
+                <!-- Admin Panel -->
+                <div id="admin-page" class="hidden p-6">
+                    <header class="flex items-center mb-6">
+                        <button class="back-btn p-2 rounded-full hover:bg-gray-200 ml-4"><i data-lucide="arrow-right" class="w-6 h-6"></i></button>
+                        <h2 class="text-2xl font-bold">لوحة تحكم الأدمن</h2>
+                    </header>
+                    <div class="bg-white p-8 rounded-xl shadow-lg space-y-6">
+                        <h3 class="text-xl font-semibold text-center">شحن رصيد المستخدمين</h3>
+                        <div>
+                            <label for="admin-user-identifier" class="block mb-2 text-sm font-medium text-gray-700">بريد إلكتروني أو ID المستخدم</label>
+                            <input type="text" id="admin-user-identifier" placeholder="e.g., user@example.com or user_id_string" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div>
+                            <label for="admin-charge-amount" class="block mb-2 text-sm font-medium text-gray-700">المبلغ (بالدولار)</label>
+                            <input type="number" id="admin-charge-amount" placeholder="e.g., 50" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <button id="admin-charge-btn" class="w-full bg-green-600 text-white py-3 rounded-md hover:bg-green-700 transition">
+                            <i data-lucide="check-circle" class="inline w-5 h-5 ml-2"></i>
+                            تنفيذ الشحن
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Chat Page -->
+                <div id="chat-page" class="hidden flex flex-col h-[calc(100vh-4rem)]"></div>
             </div>
-        </main>
-    </div>
-    
-    <!-- Content Display Page -->
-    <div id="content-page" class="hidden p-4">
-        <header class="flex items-center mb-4">
-            <button id="back-to-dashboard-btn" class="p-2 rounded-full hover:bg-gray-200 ml-4">
-                 <i data-lucide="arrow-right" class="w-6 h-6"></i>
-            </button>
-            <h2 id="content-title" class="text-2xl font-bold"></h2>
-        </header>
-        <div id="content-display" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            <!-- Content items (images/videos) will be injected here -->
+
+            <!-- Sidebar -->
+            <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden"></div>
+            <nav id="sidebar" class="fixed top-0 right-0 h-full w-72 bg-white shadow-xl z-40 transform translate-x-full transition-transform duration-300 ease-in-out">
+                <div class="p-4">
+                    <div class="flex flex-col items-center text-center border-b pb-4">
+                        <div class="w-20 h-20 rounded-full bg-indigo-100 flex items-center justify-center text-4xl mb-3"><i data-lucide="user-circle-2" class="text-indigo-500"></i></div>
+                        <p id="user-email" class="font-semibold text-gray-700"></p>
+                    </div>
+                    <div id="sidebar-menu" class="mt-4 space-y-1">
+                        <!-- Admin button will be inserted here dynamically -->
+                        <button id="wallet-btn" class="w-full flex items-center p-3 rounded-md hover:bg-gray-100 transition-colors text-gray-700"><i data-lucide="wallet" class="w-5 h-5 ml-3 text-gray-600"></i><span>المحفظة</span></button>
+                        <button id="chat-btn" class="w-full flex items-center p-3 rounded-md hover:bg-gray-100 transition-colors text-gray-700"><i data-lucide="message-square" class="w-5 h-5 ml-3 text-gray-600"></i><span id="chat-sidebar-label">الدعم الفني</span></button>
+                        <a href="#" class="flex items-center p-3 rounded-md hover:bg-gray-100 transition-colors text-gray-700"><i data-lucide="shield" class="w-5 h-5 ml-3 text-gray-600"></i><span>سياسة الخصوصية</span></a>
+                        <a href="#" class="flex items-center p-3 rounded-md hover:bg-gray-100 transition-colors text-gray-700"><i data-lucide="file-text" class="w-5 h-5 ml-3 text-gray-600"></i><span>اتفاقية المستخدم</span></a>
+                        <button id="logout-btn" class="w-full flex items-center p-3 mt-4 rounded-md hover:bg-red-50 text-red-600 transition-colors"><i data-lucide="log-out" class="w-5 h-5 ml-3"></i><span>تسجيل الخروج</span></button>
+                    </div>
+                </div>
+            </nav>
         </div>
     </div>
-
-
-    <!-- Sidebar -->
-    <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden"></div>
-    <nav id="sidebar" class="fixed top-0 right-0 h-full w-72 bg-white shadow-xl z-40 transform translate-x-full transition-transform duration-300 ease-in-out">
-        <div class="p-6">
-            <div class="flex flex-col items-center text-center border-b pb-6">
-                <div class="w-24 h-24 rounded-full bg-red-100 flex items-center justify-center text-5xl mb-3">🍓</div>
-                <p id="user-email" class="font-semibold text-gray-700"></p>
-                <p class="text-sm text-gray-500">كلمة المرور: ********</p>
-            </div>
-            <div class="mt-6 space-y-2">
-                 <a href="#" class="flex items-center p-3 rounded-md hover:bg-gray-100 transition-colors">
-                    <i data-lucide="shield" class="w-5 h-5 ml-3 text-gray-600"></i>
-                    <span>سياسة الخصوصية</span>
-                </a>
-                 <a href="#" class="flex items-center p-3 rounded-md hover:bg-gray-100 transition-colors">
-                    <i data-lucide="file-text" class="w-5 h-5 ml-3 text-gray-600"></i>
-                    <span>اتفاقية المستخدم</span>
-                </a>
-                 <button id="logout-btn" class="w-full flex items-center p-3 rounded-md hover:bg-red-50 text-red-600 transition-colors">
-                    <i data-lucide="log-out" class="w-5 h-5 ml-3"></i>
-                    <span>تسجيل الخروج</span>
-                </button>
-            </div>
-        </div>
-    </nav>
     
-    <!-- Firebase SDK -->
     <script type="module">
-        // Import Firebase modules
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { 
-            getAuth, 
-            onAuthStateChanged, 
-            createUserWithEmailAndPassword, 
-            signInWithEmailAndPassword, 
-            signOut,
-            setPersistence,
-            browserLocalPersistence
-        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { 
-            getFirestore, 
-            collection, 
-            getDocs,
-            setLogLevel
-        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, getDocs, getDoc, doc, addDoc, query, onSnapshot, orderBy, serverTimestamp, runTransaction, setDoc, where, writeBatch } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-functions.js";
 
-        // IMPORTANT: Replace with your actual Firebase configuration
+        // --- Firebase Configuration ---
         const firebaseConfig = {
-            apiKey: "AIzaSyCDOnNTsdEL_NcMWc30IanC01OPWj-gao8",
+            apiKey: "AIzaSyCDOnNTsdEL_NcMWc30IanC01OPWj-gao8", // Keep your actual API key
             authDomain: "mahmoud-17a51.firebaseapp.com",
             databaseURL: "https://mahmoud-17a51-default-rtdb.firebaseio.com",
             projectId: "mahmoud-17a51",
@@ -192,226 +193,401 @@
             appId: "1:990895559173:web:924f6809c78457f4d7426c",
         };
 
-        // Initialize Firebase
+        // --- Firebase Initialization ---
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        
-        // Enable debug logging for Firestore
-        setLogLevel('debug');
+        const functions = getFunctions(app); // Initialize Cloud Functions
 
-        // DOM Elements
+        // --- Admin & Support Configuration ---
+        const ADMIN_EMAIL = 'java88449@gmail.com';
+
+        // --- DOM Elements & State ---
         const loadingOverlay = document.getElementById('loading-overlay');
         const loginPage = document.getElementById('login-page');
-        const dashboardPage = document.getElementById('dashboard-page');
-        const contentPage = document.getElementById('content-page');
-        const sidebar = document.getElementById('sidebar');
-        const sidebarOverlay = document.getElementById('sidebar-overlay');
+        const mainApp = document.getElementById('main-app');
         const loginForm = document.getElementById('login-form');
         const showLoginFormBtn = document.getElementById('show-login-form-btn');
         const loginPrompt = document.getElementById('login-prompt');
         const loginError = document.getElementById('login-error');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebar-overlay');
+        const sidebarMenu = document.getElementById('sidebar-menu');
+        const lightboxOverlay = document.getElementById('lightbox-overlay');
+        const lightboxContent = document.getElementById('lightbox-content');
+        const toastEl = document.getElementById('toast');
+        const pageContainers = {
+            dashboard: document.getElementById('dashboard-page'),
+            content: document.getElementById('content-page'),
+            wallet: document.getElementById('wallet-page'),
+            chat: document.getElementById('chat-page'),
+            admin: document.getElementById('admin-page'),
+        };
+        
+        let walletUnsubscribe = null;
+        let chatUnsubscribe = null;
+        let currentChatTarget = null; // For support view
 
-
-        // Dashboard categories definition
         const dashboardCategories = [
-            { id: 'banners', title: 'مركز البنرات', icon: 'image' },
-            { id: 'celebrityGifts', title: 'هدايا المشاهير', icon: 'gift' },
-            { id: 'roomBackgrounds', title: 'خلفيات روم', icon: 'wallpaper' },
-            { id: 'promoVideos', title: 'فيديو ترويجي', icon: 'video' },
-            { id: 'shippingSchedule', title: 'جدول الشحن', icon: 'table' },
-            { id: 'animatedImages', title: 'صور متحركة', icon: 'film' }
+            { id: 'banners', title: 'مركز البنرات', icon: 'image' }, { id: 'celebrityGifts', title: 'هدايا المشاهير', icon: 'gift' },
+            { id: 'svgaGifts', title: 'هدايا SVGA', icon: 'gem' }, { id: 'svgaFrames', title: 'إطارات SVGA', icon: 'square' },
+            { id: 'roomBackgrounds', title: 'خلفيات روم', icon: 'wallpaper' }, { id: 'promoVideos', title: 'فيديو ترويجي', icon: 'video' },
+            { id: 'shippingSchedule', title: 'جدول الشحن', icon: 'table' }, { id: 'animatedImages', title: 'صور متحركة', icon: 'film' }
         ];
 
-        // --- AUTHENTICATION ---
-        
-        // This is the main controller of the app. It listens for auth changes.
+        // --- Toast Notification ---
+        function showToast(message, isError = false) {
+            toastEl.textContent = message;
+            toastEl.className = `fixed bottom-[-100px] left-1/2 -translate-x-1/2 px-6 py-3 rounded-lg text-white font-semibold shadow-lg transition-all duration-500 z-[100] ${isError ? 'bg-red-600' : 'bg-green-600'}`;
+            toastEl.classList.add('show');
+            setTimeout(() => { toastEl.classList.remove('show'); }, 3000);
+        }
+
+        // --- AUTHENTICATION & REAL-TIME LISTENERS ---
         onAuthStateChanged(auth, user => {
+            if (walletUnsubscribe) walletUnsubscribe();
+            if (chatUnsubscribe) chatUnsubscribe();
+            
+            // Clear admin button on auth state change
+            const existingAdminBtn = document.getElementById('admin-panel-btn');
+            if (existingAdminBtn) existingAdminBtn.remove();
+            
             if (user) {
-                // User is signed in
-                showDashboard(user);
+                mainApp.classList.remove('hidden');
+                loginPage.classList.add('hidden');
+                document.getElementById('chat-sidebar-label').textContent = user.email === ADMIN_EMAIL ? 'لوحة تحكم الدعم' : 'الدعم الفني';
+                
+                // --- ADMIN-SPECIFIC UI ---
+                if (user.email === ADMIN_EMAIL) {
+                    const adminBtn = document.createElement('button');
+                    adminBtn.id = 'admin-panel-btn';
+                    adminBtn.className = 'w-full flex items-center p-3 rounded-md hover:bg-indigo-50 transition-colors text-indigo-600 font-bold';
+                    adminBtn.innerHTML = `<i data-lucide="shield-check" class="w-5 h-5 ml-3"></i><span>لوحة التحكم</span>`;
+                    adminBtn.addEventListener('click', () => showPage('admin'));
+                    sidebarMenu.insertAdjacentElement('afterbegin', adminBtn);
+                }
+
+                // Real-time wallet listener
+                const walletRef = doc(db, 'wallets', user.uid);
+                walletUnsubscribe = onSnapshot(walletRef, (docSnap) => {
+                    const balance = docSnap.exists() ? docSnap.data().balance || 0 : 0;
+                    document.getElementById('wallet-balance').textContent = `$${Number(balance).toFixed(2)}`;
+                });
+
+                // Set up user document (for email-based lookups by admin)
+                const userDocRef = doc(db, "users", user.uid);
+                setDoc(userDocRef, { email: user.email }, { merge: true });
+
+                showPage('dashboard', user);
             } else {
-                // User is signed out
-                showLoginPage();
+                mainApp.classList.add('hidden');
+                loginPage.classList.remove('hidden');
+                loginPrompt.classList.remove('hidden');
+                loginForm.classList.add('hidden');
+                closeSidebar();
             }
             loadingOverlay.classList.add('hidden');
+            lucide.createIcons();
         });
 
-        // Handle login/signup form submission
+        // --- Login / Signup ---
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             loadingOverlay.classList.remove('hidden');
             loginError.textContent = '';
-            
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
-
             try {
-                // Try to sign in the user
                 await signInWithEmailAndPassword(auth, email, password);
             } catch (error) {
-                // If user doesn't exist, create a new account
                 if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
                     try {
-                        await createUserWithEmailAndPassword(auth, email, password);
+                        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                        // Create wallet for new user
+                        const walletRef = doc(db, "wallets", userCredential.user.uid);
+                        await setDoc(walletRef, { balance: 0 });
                     } catch (signupError) {
-                        console.error("Signup Error:", signupError);
-                        loginError.textContent = 'حدث خطأ أثناء إنشاء الحساب.';
+                        loginError.textContent = 'خطأ في إنشاء الحساب.';
                         loadingOverlay.classList.add('hidden');
                     }
                 } else {
-                    console.error("Login Error:", error);
-                    loginError.textContent = 'البريد الإلكتروني أو كلمة المرور غير صحيحة.';
+                    loginError.textContent = 'البريد أو كلمة المرور غير صحيحة.';
                     loadingOverlay.classList.add('hidden');
                 }
             }
         });
+        document.getElementById('logout-btn').addEventListener('click', () => { loadingOverlay.classList.remove('hidden'); signOut(auth); });
 
-        // Logout button
-        document.getElementById('logout-btn').addEventListener('click', () => {
-            loadingOverlay.classList.remove('hidden');
-            signOut(auth);
-        });
-
-        // --- UI DISPLAY LOGIC ---
-
-        function showLoginPage() {
-            loginPage.classList.remove('hidden');
-            dashboardPage.classList.add('hidden');
-            contentPage.classList.add('hidden');
+        // --- PAGE NAVIGATION ---
+        function showPage(pageName, context) {
+            Object.values(pageContainers).forEach(p => p.classList.add('hidden'));
+            pageContainers[pageName]?.classList.remove('hidden');
+            switch(pageName) {
+                case 'dashboard': showDashboard(context); break;
+                case 'content': showContentPage(context.id, context.title); break;
+                case 'wallet': /* Handled by sidebar button */ break;
+                case 'chat': showChatPage(); break;
+                case 'admin': /* Handled by sidebar button */ break;
+            }
             closeSidebar();
-            loginPrompt.classList.remove('hidden');
-            loginForm.classList.add('hidden');
         }
 
+        // --- DASHBOARD ---
         function showDashboard(user) {
-            loginPage.classList.add('hidden');
-            contentPage.classList.add('hidden');
-            dashboardPage.classList.remove('hidden');
-            
-            // Populate user info in sidebar
             document.getElementById('user-email').textContent = user.email;
-            
-            // Populate dashboard items
-            const container = dashboardPage.querySelector('.flex.overflow-x-auto');
-            container.innerHTML = ''; // Clear previous items
+            const container = pageContainers.dashboard.querySelector('.flex.overflow-x-auto');
+            container.innerHTML = ''; 
             dashboardCategories.forEach(cat => {
                 const card = document.createElement('div');
                 card.className = 'flex-shrink-0 w-32 h-32 bg-white rounded-xl shadow p-4 flex flex-col items-center justify-center text-center cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all';
-                card.innerHTML = `
-                    <i data-lucide="${cat.icon}" class="w-10 h-10 text-indigo-500 mb-2"></i>
-                    <span class="text-sm font-semibold">${cat.title}</span>
-                `;
-                card.addEventListener('click', () => showContentPage(cat.id, cat.title));
+                card.innerHTML = `<i data-lucide="${cat.icon}" class="w-10 h-10 text-indigo-500 mb-2"></i><span class="text-sm font-semibold">${cat.title}</span>`;
+                card.addEventListener('click', () => showPage('content', { id: cat.id, title: cat.title }));
                 container.appendChild(card);
             });
-            lucide.createIcons(); // Re-render icons
+            lucide.createIcons();
         }
         
+        // --- CONTENT & PURCHASING (No changes here) ---
         async function showContentPage(categoryId, categoryTitle) {
             loadingOverlay.classList.remove('hidden');
-            dashboardPage.classList.add('hidden');
-            contentPage.classList.remove('hidden');
-            
             document.getElementById('content-title').textContent = categoryTitle;
             const display = document.getElementById('content-display');
-            display.innerHTML = '<p>جاري تحميل المحتوى...</p>';
-
+            display.innerHTML = '<p class="col-span-2 text-center">جاري تحميل المحتوى...</p>';
             try {
-                // This is where we fetch data from Firestore
-                const querySnapshot = await getDocs(collection(db, "content", categoryId, "items"));
-                const items = [];
-                querySnapshot.forEach((doc) => {
-                    items.push({ id: doc.id, ...doc.data() });
-                });
-                
-                renderContent(items, categoryId);
-                
+                const q = query(collection(db, "content", categoryId, "items"));
+                const querySnapshot = await getDocs(q);
+                const items = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                renderContent(items);
             } catch (error) {
                 console.error("Error fetching content: ", error);
-                display.innerHTML = '<p class="text-red-500">حدث خطأ أثناء تحميل المحتوى. تأكد من أن قاعدة البيانات مهيئة بشكل صحيح.</p>';
+                display.innerHTML = '<p class="col-span-2 text-center text-red-500">حدث خطأ أثناء تحميل المحتوى.</p>';
             } finally {
                 loadingOverlay.classList.add('hidden');
             }
         }
         
-        // Renders the fetched content based on its type and category
-        function renderContent(items, categoryId) {
+        function renderContent(items) {
             const display = document.getElementById('content-display');
             if (items.length === 0) {
-                display.innerHTML = '<p>لا يوجد محتوى في هذا القسم حاليًا.</p>';
+                display.innerHTML = '<p class="col-span-2 text-center">لا يوجد محتوى في هذا القسم حاليًا.</p>';
                 return;
             }
-            
-            display.innerHTML = ''; // Clear loading message
-            
+            display.innerHTML = '';
             items.forEach(item => {
-                const card = document.createElement('div');
-                card.className = 'bg-white rounded-lg shadow overflow-hidden transform hover:shadow-xl transition-shadow duration-300';
+                const wrapper = document.createElement('div');
+                wrapper.className = 'bg-white rounded-lg shadow overflow-hidden flex flex-col';
+                const contentContainer = document.createElement('div');
+                contentContainer.className = 'cursor-pointer flex-grow aspect-square';
                 
-                let contentHTML = '';
-                
-                // --- Content Display Logic ---
-                // Here we determine how to display each item.
-                // The size and type depend on the category.
-                
-                if (item.type === 'video') {
-                    // For videos, use a <video> tag
-                    let videoClass = "w-full h-full object-cover";
-                    if (['promoVideos', 'celebrityGifts', 'roomBackgrounds'].includes(categoryId)) {
-                        videoClass += " aspect-[9/16]"; // Shorts format
-                    }
-                    contentHTML = `<video src="${item.url}" class="${videoClass}" controls playsinline loop></video>`;
-                } else {
-                    // For images, use an <img> tag
-                    let imgClass = "w-full object-cover";
-                    if (categoryId === 'banners') {
-                         imgClass += " aspect-[1080/576]"; // Banner format
-                    } else if (['shippingSchedule', 'animatedImages'].includes(categoryId)) {
-                         imgClass += " aspect-square"; // Instagram post format
-                    } else {
-                         imgClass += " aspect-[9/16]"; // Default to shorts format
-                    }
-                    contentHTML = `<img src="${item.url}" alt="Content image" class="${imgClass}" onerror="this.parentElement.innerHTML = '<div class=\'p-4 text-red-500\'>فشل تحميل الصورة</div>';">`;
+                let contentHTML = item.type === 'video'
+                    ? `<video src="${item.url}" class="w-full h-full object-cover" playsinline loop muted></video>`
+                    : `<img src="${item.url}" alt="Content image" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML = '<div class=\'p-4 text-red-500 text-center\'>فشل تحميل الصورة</div>';">`;
+                contentContainer.innerHTML = contentHTML;
+                contentContainer.addEventListener('click', () => showLightbox(contentHTML.replace('muted', 'controls autoplay')));
+                wrapper.appendChild(contentContainer);
+
+                if (item.price !== undefined && item.price !== null) {
+                    const info = document.createElement('div');
+                    info.className = 'p-3 flex items-center justify-between bg-gray-50';
+                    info.innerHTML = `
+                        <span class="font-bold text-indigo-600">$${Number(item.price).toFixed(2)}</span>
+                        <button class="buy-btn bg-indigo-600 text-white text-sm px-4 py-1 rounded-md hover:bg-indigo-700 transition">شراء</button>
+                    `;
+                    info.querySelector('.buy-btn').addEventListener('click', () => handlePurchase(item));
+                    wrapper.appendChild(info);
                 }
-                
-                card.innerHTML = contentHTML;
-                display.appendChild(card);
+                display.appendChild(wrapper);
             });
         }
 
+        async function handlePurchase(item) {
+            if (!confirm(`هل أنت متأكد من شراء هذا المنتج مقابل $${item.price.toFixed(2)}؟ سيتم خصم المبلغ من محفظتك.`)) {
+                return;
+            }
+            loadingOverlay.classList.remove('hidden');
+            const user = auth.currentUser;
+            const itemPrice = Number(item.price);
 
-        // --- EVENT LISTENERS ---
+            try {
+                await runTransaction(db, async (transaction) => {
+                    const walletRef = doc(db, "wallets", user.uid);
+                    const walletDoc = await transaction.get(walletRef);
+                    
+                    if (!walletDoc.exists() || Number(walletDoc.data().balance || 0) < itemPrice) {
+                        throw "رصيدك غير كافٍ لإتمام عملية الشراء.";
+                    }
+                    
+                    const currentBalance = Number(walletDoc.data().balance);
+                    const newBalance = currentBalance - itemPrice;
+                    transaction.update(walletRef, { balance: newBalance });
+                });
+                showToast("تم الشراء بنجاح!");
+            } catch (error) {
+                console.error("Purchase failed:", error);
+                showToast(typeof error === 'string' ? error : "فشلت عملية الشراء. حاول مرة أخرى.", true);
+            } finally {
+                loadingOverlay.classList.add('hidden');
+            }
+        }
 
-        // Show the login form when the mail icon is clicked
-        showLoginFormBtn.addEventListener('click', () => {
-            loginPrompt.classList.add('hidden');
-            loginForm.classList.remove('hidden');
+        // --- ADMIN PANEL LOGIC ---
+        document.getElementById('admin-charge-btn').addEventListener('click', async () => {
+            const identifier = document.getElementById('admin-user-identifier').value.trim();
+            const amount = parseFloat(document.getElementById('admin-charge-amount').value);
+
+            if (!identifier || !amount || amount <= 0) {
+                showToast("الرجاء إدخال جميع الحقول بشكل صحيح.", true);
+                return;
+            }
+            
+            loadingOverlay.classList.remove('hidden');
+            
+            try {
+                // IMPORTANT: The function 'updateUserBalance' must be deployed to Firebase Cloud Functions
+                const updateUserBalance = httpsCallable(functions, 'updateUserBalance');
+                const result = await updateUserBalance({ identifier: identifier, amount: amount });
+
+                if (result.data.success) {
+                    showToast(`تم شحن رصيد ${result.data.email} بنجاح!`);
+                    document.getElementById('admin-user-identifier').value = '';
+                    document.getElementById('admin-charge-amount').value = '';
+                } else {
+                    throw new Error(result.data.error || "فشل تحديد المستخدم أو تحديث الرصيد.");
+                }
+            } catch (error) {
+                console.error("Balance charge error:", error);
+                showToast(error.message || "حدث خطأ أثناء عملية الشحن.", true);
+            } finally {
+                loadingOverlay.classList.add('hidden');
+            }
         });
         
-        // Go back from content page to dashboard
-        document.getElementById('back-to-dashboard-btn').addEventListener('click', () => {
-            showDashboard(auth.currentUser);
-        });
-
-        // Sidebar toggle logic
-        const sidebarToggleBtn = document.getElementById('sidebar-toggle-btn');
-        sidebarToggleBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            sidebar.classList.toggle('translate-x-full');
-            sidebarOverlay.classList.toggle('hidden');
-        });
-        
-        sidebarOverlay.addEventListener('click', closeSidebar);
-
-        function closeSidebar() {
-            sidebar.classList.add('translate-x-full');
-            sidebarOverlay.classList.add('hidden');
+        // --- CHAT SYSTEM (No changes here) ---
+        function showChatPage() {
+            if (chatUnsubscribe) chatUnsubscribe();
+            currentChatTarget = null;
+            if (auth.currentUser.email === ADMIN_EMAIL) {
+                showSupportChatList();
+            } else {
+                showUserChatView(auth.currentUser.uid);
+            }
         }
         
-        // --- INITIALIZATION ---
+        async function showSupportChatList() {
+            const chatPage = pageContainers.chat;
+            chatPage.innerHTML = `
+                <header class="flex items-center p-4 border-b">
+                    <button class="back-btn p-2 rounded-full hover:bg-gray-200 ml-4"><i data-lucide="arrow-right" class="w-6 h-6"></i></button>
+                    <h2 class="text-xl font-bold">لوحة تحكم الدعم</h2>
+                </header>
+                <div id="support-chat-list" class="flex-grow p-2 overflow-y-auto bg-gray-100">
+                    <p class="text-center p-4">جاري تحميل المحادثات...</p>
+                </div>`;
+            chatPage.querySelector('.back-btn').addEventListener('click', () => showPage('dashboard', auth.currentUser));
+            lucide.createIcons();
+
+            try {
+                const chatsRef = collection(db, "chats");
+                const snapshot = await getDocs(chatsRef);
+                const chatListEl = document.getElementById('support-chat-list');
+                chatListEl.innerHTML = '';
+                if(snapshot.empty) {
+                    chatListEl.innerHTML = '<p class="text-center p-4">لا توجد محادثات حتى الآن.</p>';
+                    return;
+                }
+                snapshot.forEach(doc => {
+                    const chatData = doc.data();
+                    const userEl = document.createElement('div');
+                    userEl.className = 'p-3 mb-1 bg-white rounded-md cursor-pointer hover:bg-indigo-50 flex justify-between items-center';
+                    userEl.innerHTML = `<span>${chatData.userEmail || doc.id}</span>`;
+                    userEl.addEventListener('click', () => showUserChatView(doc.id, true));
+                    chatListEl.appendChild(userEl);
+                });
+            } catch(error) {
+                 document.getElementById('support-chat-list').innerHTML = '<p class="text-center p-4 text-red-500">فشل تحميل المحادثات.</p>';
+            }
+        }
+
+        function showUserChatView(userId, isSupportView = false) {
+            currentChatTarget = userId;
+            const chatPage = pageContainers.chat;
+            chatPage.innerHTML = `
+                <header class="flex items-center p-4 border-b">
+                    <button id="chat-back-btn" class="p-2 rounded-full hover:bg-gray-200 ml-4"><i data-lucide="arrow-right" class="w-6 h-6"></i></button>
+                    <h2 class="text-xl font-bold">${isSupportView ? 'محادثة المستخدم' : 'الدعم الفني'}</h2>
+                </header>
+                <div id="chat-messages" class="flex-grow p-4 overflow-y-auto bg-gray-100 space-y-4"></div>
+                <div class="p-4 bg-white border-t space-y-2">
+                    <div class="flex space-x-2 space-x-reverse">
+                        <input type="text" id="chat-message-input" placeholder="اكتب رسالتك..." class="flex-grow px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <button id="send-chat-message-btn" class="bg-indigo-600 text-white p-3 rounded-md hover:bg-indigo-700"><i data-lucide="send" class="w-5 h-5"></i></button>
+                    </div>
+                </div>`;
+            lucide.createIcons();
+
+            document.getElementById('chat-back-btn').addEventListener('click', () => {
+                isSupportView ? showSupportChatList() : showPage('dashboard', auth.currentUser);
+            });
+            const messageInput = document.getElementById('chat-message-input');
+            document.getElementById('send-chat-message-btn').addEventListener('click', () => {
+                if(messageInput.value) { sendMessage(messageInput.value); messageInput.value = ''; }
+            });
+            messageInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    if(messageInput.value) { sendMessage(messageInput.value); messageInput.value = ''; }
+                }
+            });
+            
+            const messagesContainer = document.getElementById('chat-messages');
+            const q = query(collection(db, "chats", userId, "messages"), orderBy("timestamp"));
+            chatUnsubscribe = onSnapshot(q, (snapshot) => {
+                messagesContainer.innerHTML = '';
+                snapshot.forEach((doc) => {
+                    const message = doc.data();
+                    const messageEl = document.createElement('div');
+                    const isMe = message.senderId === auth.currentUser.uid;
+                    messageEl.className = `flex flex-col ${isMe ? 'items-end' : 'items-start'}`;
+                    messageEl.innerHTML = `<div class="p-3 rounded-lg max-w-xs ${isMe ? 'bg-indigo-500 text-white' : 'bg-white shadow-sm'}">${message.text}</div>`;
+                    messagesContainer.appendChild(messageEl);
+                });
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            });
+        }
+
+        async function sendMessage(text) {
+             const user = auth.currentUser;
+             const chatId = currentChatTarget;
+             if (!user || !text || !chatId) return;
+
+             try {
+                const messagesRef = collection(db, "chats", chatId, "messages");
+                await addDoc(messagesRef, {
+                    text: text,
+                    senderId: user.uid,
+                    timestamp: serverTimestamp()
+                });
+                const chatDocRef = doc(db, "chats", chatId);
+                await setDoc(chatDocRef, { userEmail: user.email === ADMIN_EMAIL ? (await getDoc(doc(db, "users", chatId))).data().email : user.email, lastUpdate: serverTimestamp() }, { merge: true });
+             } catch (error) {
+                console.error("Error sending message: ", error);
+                showToast("فشل إرسال الرسالة", true);
+             }
+        }
         
-        // On initial load, show the loading spinner until Firebase Auth is ready.
+        // --- UI & EVENT LISTENERS ---
+        document.getElementById('back-to-dashboard-btn').addEventListener('click', () => showPage('dashboard', auth.currentUser));
+        document.querySelectorAll('.back-btn').forEach(btn => btn.addEventListener('click', () => showPage('dashboard', auth.currentUser)));
+        showLoginFormBtn.addEventListener('click', () => { loginPrompt.classList.add('hidden'); loginForm.classList.remove('hidden'); });
+        document.getElementById('wallet-btn').addEventListener('click', () => showPage('wallet'));
+        document.getElementById('chat-btn').addEventListener('click', () => showPage('chat'));
+        document.getElementById('charge-balance-btn').addEventListener('click', () => showPage('chat'));
+        document.getElementById('sidebar-toggle-btn').addEventListener('click', (e) => { e.stopPropagation(); sidebar.classList.toggle('translate-x-full'); sidebarOverlay.classList.toggle('hidden'); });
+        sidebarOverlay.addEventListener('click', closeSidebar);
+        function closeSidebar() { sidebar.classList.add('translate-x-full'); sidebarOverlay.classList.add('hidden'); }
+        function showLightbox(contentHTML) { lightboxContent.innerHTML = contentHTML; lightboxOverlay.classList.remove('hidden'); }
+        lightboxOverlay.addEventListener('click', () => { lightboxOverlay.classList.add('hidden'); lightboxContent.innerHTML = ''; });
+        
+        // --- INITIALIZATION ---
         loadingOverlay.classList.remove('hidden');
         lucide.createIcons();
     </script>
