@@ -17,7 +17,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 
     <style>
-        body { font-family: 'Cairo', sans-serif; background-color: #f8f9fa; }
+        body { 
+            font-family: 'Cairo', sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         .hidden { display: none; }
@@ -36,6 +40,7 @@
         #lightbox-content img, #lightbox-content video {
             width: auto; height: auto; max-width: 100%; max-height: 100%; object-fit: contain;
         }
+        
         /* Toast Notification Styles */
         #toast {
             position: fixed; bottom: -100px; left: 50%;
@@ -49,9 +54,369 @@
         #toast.show { bottom: 30px; }
         #toast.success { background-color: #28a745; }
         #toast.error { background-color: #dc3545; }
+        
+        /* Main Banner Styles */
+        .main-banner {
+            width: 1536px;
+            height: 432px;
+            max-width: 100%;
+            object-fit: cover;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+            margin: 0 auto;
+            display: block;
+            border: 3px solid rgba(255,255,255,0.2);
+        }
+        
+        /* Category Grid Styles */
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .category-card {
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+            border-radius: 24px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 3px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .category-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.1) 0%, rgba(124, 58, 237, 0.1) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .category-card:hover::before {
+            opacity: 1;
+        }
+        
+        .category-card:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(79, 70, 229, 0.2);
+            border-color: #4f46e5;
+        }
+        
+        .category-card:nth-child(1) {
+            grid-column: 1;
+            grid-row: 1;
+        }
+        
+        .category-card:nth-child(2) {
+            grid-column: 2;
+            grid-row: 1;
+        }
+        
+        .category-card:nth-child(3) {
+            grid-column: 1;
+            grid-row: 2;
+        }
+        
+        .category-card:nth-child(4) {
+            grid-column: 2;
+            grid-row: 2;
+        }
+        
+        .category-card:nth-child(5) {
+            grid-column: 1;
+            grid-row: 3;
+        }
+        
+        .category-card:nth-child(6) {
+            grid-column: 2;
+            grid-row: 3;
+        }
+        
+        .category-card:nth-child(7) {
+            grid-column: 1;
+            grid-row: 4;
+        }
+        
+        .category-card:nth-child(8) {
+            grid-column: 2;
+            grid-row: 4;
+        }
+        
+        /* Cart Badge */
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: linear-gradient(45deg, #ef4444, #dc2626);
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        /* Manager Badge */
+        .manager-badge {
+            background: linear-gradient(45deg, #065f46, #047857);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: inline-block;
+            box-shadow: 0 0 20px rgba(6, 95, 70, 0.5);
+            animation: glow-green 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow-green {
+            from { box-shadow: 0 0 20px rgba(6, 95, 70, 0.5); }
+            to { box-shadow: 0 0 30px rgba(6, 95, 70, 0.8), 0 0 40px rgba(6, 95, 70, 0.6); }
+        }
+        
+        /* Office Badge */
+        .office-badge {
+            background: linear-gradient(45deg, #dc2626, #b91c1c);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: inline-block;
+            box-shadow: 0 0 20px rgba(220, 38, 38, 0.5);
+            animation: glow-red 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow-red {
+            from { box-shadow: 0 0 20px rgba(220, 38, 38, 0.5); }
+            to { box-shadow: 0 0 30px rgba(220, 38, 38, 0.8), 0 0 40px rgba(220, 38, 38, 0.6); }
+        }
+        
+        /* Agent Badge */
+        .agent-badge {
+            background: linear-gradient(45deg, #4f46e5, #7c3aed);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: inline-block;
+        }
+        
+        /* Merchant Badge */
+        .merchant-badge {
+            background: linear-gradient(45deg, #059669, #10b981);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: inline-block;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+            backdrop-filter: blur(10px);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-banner {
+                height: 250px;
+                border-radius: 16px;
+            }
+            
+            .category-grid {
+                max-width: 400px;
+                gap: 16px;
+                padding: 16px;
+            }
+            
+            .category-card {
+                padding: 20px;
+                border-radius: 20px;
+            }
+            
+            .category-card i {
+                width: 2.5rem !important;
+                height: 2.5rem !important;
+            }
+            
+            .sidebar {
+                width: 280px;
+            }
+            
+            /* Auto-close sidebar on mobile when opening dashboard */
+            .sidebar.mobile-auto-close {
+                transform: translateX(100%);
+            }
+            
+            /* Improved mobile navigation */
+            header {
+                padding: 12px 16px;
+            }
+            
+            /* Better mobile spacing */
+            .p-6 {
+                padding: 1rem;
+            }
+            
+            .p-4 {
+                padding: 0.75rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .main-banner {
+                height: 200px;
+                border-radius: 12px;
+            }
+            
+            .category-grid {
+                max-width: 320px;
+                gap: 12px;
+                padding: 12px;
+            }
+            
+            .category-card {
+                padding: 16px;
+                border-radius: 16px;
+            }
+            
+            .category-card i {
+                width: 2rem !important;
+                height: 2rem !important;
+            }
+            
+            .category-card span {
+                font-size: 0.75rem;
+            }
+            
+            .sidebar {
+                width: 260px;
+            }
+            
+            /* Smaller text on very small screens */
+            .text-2xl {
+                font-size: 1.25rem;
+            }
+            
+            .text-xl {
+                font-size: 1.125rem;
+            }
+        }
+        
+        /* Enhanced mobile interactions */
+        @media (hover: none) and (pointer: coarse) {
+            .category-card:hover {
+                transform: none;
+            }
+            
+            .category-card:active {
+                transform: scale(0.95);
+                transition: transform 0.1s ease;
+            }
+        }
+        
+        /* Improved mobile sidebar */
+        @media (max-width: 768px) {
+            #sidebar {
+                width: 85vw;
+                max-width: 320px;
+            }
+            
+            /* Auto-close sidebar when navigating */
+            .auto-close-sidebar {
+                transform: translateX(100%) !important;
+            }
+        }
+        
+        /* Cart Item Animation */
+        .cart-item {
+            animation: slideInRight 0.3s ease-out;
+        }
+        
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        /* Success Message Animation */
+        .success-message {
+            animation: fadeInUp 0.5s ease-out;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        /* Video Banner Styles */
+        .video-banner {
+            width: 100%;
+            height: 200px;
+            border-radius: 12px;
+            object-fit: cover;
+        }
+        
+        /* Password Change Security */
+        .security-lock {
+            background: linear-gradient(45deg, #fbbf24, #f59e0b);
+            color: white;
+            padding: 8px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
+        }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800">
+<body class="text-gray-800">
 
     <!-- Overlays and Global Elements -->
     <div id="loading-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
@@ -66,88 +431,364 @@
     <div id="app-container" class="relative min-h-screen">
         <!-- Login Page -->
         <div id="login-page" class="min-h-screen flex flex-col hidden">
-            <header class="p-4 bg-white shadow-md"><img src="https://i.postimg.cc/1tyC8c1C/IMG.jpg" alt="Logo" class="h-10 mx-auto"></header>
-            <main class="flex-grow flex items-center justify-center">
+            <header class="p-4 bg-white/90 backdrop-blur-md shadow-md">
+                <img src="https://i.postimg.cc/1tyC8c1C/IMG.jpg" alt="Logo" class="h-10 mx-auto">
+            </header>
+            <main class="flex-grow flex items-center justify-center p-4">
                 <div id="login-prompt" class="text-center">
-                    <p class="text-lg mb-4">اضغط على الأيقونة لتسجيل الدخول</p>
-                    <button id="show-login-form-btn" class="bg-indigo-600 text-white p-4 rounded-full shadow-lg hover:bg-indigo-700 transition-transform transform hover:scale-110">
+                    <p class="text-lg mb-4 text-white font-semibold">اضغط على الأيقونة لتسجيل الدخول</p>
+                    <button id="show-login-form-btn" class="bg-white text-indigo-600 p-4 rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-110">
                         <i data-lucide="mail" class="w-8 h-8"></i>
                     </button>
                 </div>
-                <form id="login-form" class="hidden w-full max-w-sm p-8 space-y-6 bg-white rounded-xl shadow-lg">
-                    <h2 class="text-2xl font-bold text-center">تسجيل الدخول أو إنشاء حساب</h2>
+                <form id="login-form" class="hidden w-full max-w-sm p-8 space-y-6 bg-white/95 backdrop-blur-md rounded-xl shadow-xl">
+                    <h2 class="text-2xl font-bold text-center text-gray-800">تسجيل الدخول أو إنشاء حساب</h2>
                     <div class="space-y-4">
-                        <input type="email" id="email" placeholder="البريد الإلكتروني" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
-                        <input type="password" id="password" placeholder="كلمة المرور" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                        <input type="email" id="email" placeholder="البريد الإلكتروني" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required>
+                        <input type="password" id="password" placeholder="كلمة المرور" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required>
                     </div>
                     <div id="login-error" class="text-red-500 text-sm text-center"></div>
-                    <button type="submit" class="w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 transition">دخول</button>
+                    <button type="submit" class="w-full bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition font-semibold">دخول</button>
                 </form>
             </main>
         </div>
 
         <!-- Main App (Post-Login) -->
         <div id="main-app" class="hidden">
-            <header class="bg-white shadow-sm sticky top-0 z-30 flex items-center justify-between p-3 h-16">
-                <button id="sidebar-toggle-btn" class="p-2 rounded-full hover:bg-gray-100"><i data-lucide="menu" class="w-6 h-6"></i></button>
+            <header class="bg-white/90 backdrop-blur-md shadow-sm sticky top-0 z-30 flex items-center justify-between p-3 h-16">
+                <button id="sidebar-toggle-btn" class="p-2 rounded-full hover:bg-gray-100 transition-colors">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
                 <img src="https://i.postimg.cc/1tyC8c1C/IMG.jpg" alt="Logo" class="h-9">
-                <div class="w-10"></div>
+                <div class="flex items-center space-x-2 space-x-reverse">
+                    <!-- Cart Bell Icon -->
+                    <button id="cart-btn" class="relative p-2 rounded-full hover:bg-gray-100 transition-colors">
+                        <i data-lucide="bell" class="w-6 h-6"></i>
+                        <span id="cart-badge" class="cart-badge hidden">0</span>
+                    </button>
+                </div>
             </header>
 
             <!-- Page Content Area -->
             <div id="page-content">
                 <!-- Dashboard -->
                 <div id="dashboard-page" class="hidden">
-                    <main class="p-4">
-                        <div class="flex overflow-x-auto space-x-4 space-x-reverse pb-4 no-scrollbar"></div>
-                        <div class="flex justify-center my-6"><img src="https://i.postimg.cc/1tyC8c1C/IMG.jpg" alt="Main Logo" class="h-16"></div>
+                    <main class="p-4 max-w-6xl mx-auto">
+                        <!-- Main Banner Section -->
+                        <div class="mb-8 text-center">
+                            <img src="https://i.postimg.cc/1tyC8c1C/IMG.jpg" alt="Main Banner" class="main-banner">
+                        </div>
+                        
+                        <!-- Categories Grid -->
+                        <div class="mb-8">
+                            <div id="categories-grid" class="category-grid">
+                                <!-- Categories will be loaded here -->
+                            </div>
+                        </div>
+                        
+                        <!-- Video Banners Section -->
+                        <div id="video-banners-section" class="mb-6">
+                            <h3 class="text-2xl font-bold text-center mb-6 text-white">بنرات الفيديو والهدايا</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- Video banners will be loaded here -->
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-center my-8">
+                            <img src="https://i.postimg.cc/1tyC8c1C/IMG.jpg" alt="Main Logo" class="h-20 opacity-80">
+                        </div>
                     </main>
-                    <footer class="text-center p-4 text-gray-500 text-sm"><p>يوجد تصاميم كل شيء يخص الدردشه الصوتيه</p></footer>
+                    <footer class="text-center p-6 text-white/80 text-sm">
+                        <p>يوجد تصاميم كل شيء يخص الدردشه الصوتيه</p>
+                    </footer>
                 </div>
                 
                 <!-- Content Display -->
                 <div id="content-page" class="hidden p-4">
-                    <header class="flex items-center mb-4">
-                        <button id="back-to-dashboard-btn" class="p-2 rounded-full hover:bg-gray-200 ml-4"><i data-lucide="arrow-right" class="w-6 h-6"></i></button>
-                        <h2 id="content-title" class="text-2xl font-bold"></h2>
-                    </header>
-                    <div id="content-display" class="grid grid-cols-2 gap-4"></div>
+                    <div class="max-w-6xl mx-auto">
+                        <header class="flex items-center mb-6">
+                            <button id="back-to-dashboard-btn" class="p-2 rounded-full hover:bg-white/20 ml-4 text-white">
+                                <i data-lucide="arrow-right" class="w-6 h-6"></i>
+                            </button>
+                            <h2 id="content-title" class="text-2xl font-bold text-white"></h2>
+                        </header>
+                        <div id="content-display" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
+                    </div>
                 </div>
 
                 <!-- Wallet -->
                 <div id="wallet-page" class="hidden p-6">
-                    <header class="flex items-center mb-6">
-                        <button class="back-btn p-2 rounded-full hover:bg-gray-200 ml-4"><i data-lucide="arrow-right" class="w-6 h-6"></i></button>
-                        <h2 class="text-2xl font-bold">المحفظة</h2>
-                    </header>
-                    <div class="bg-white p-8 rounded-xl shadow-lg text-center">
-                        <i data-lucide="wallet" class="w-16 h-16 mx-auto text-indigo-500 mb-4"></i>
-                        <p class="text-lg text-gray-600 mb-2">رصيدك الحالي</p>
-                        <p id="wallet-balance" class="text-4xl font-bold text-gray-800 mb-6">$0.00</p>
-                        <button id="charge-balance-btn" class="w-full bg-indigo-600 text-white py-3 rounded-md hover:bg-indigo-700 transition">شحن الرصيد عبر الدعم</button>
+                    <div class="max-w-md mx-auto">
+                        <header class="flex items-center mb-6">
+                            <button class="back-btn p-2 rounded-full hover:bg-white/20 ml-4 text-white">
+                                <i data-lucide="arrow-right" class="w-6 h-6"></i>
+                            </button>
+                            <h2 class="text-2xl font-bold text-white">المحفظة</h2>
+                        </header>
+                        <div class="bg-white/95 backdrop-blur-md p-8 rounded-xl shadow-xl text-center">
+                            <i data-lucide="wallet" class="w-16 h-16 mx-auto text-indigo-500 mb-4"></i>
+                            <p class="text-lg text-gray-600 mb-2">رصيدك الحالي</p>
+                            <p id="wallet-balance" class="text-4xl font-bold text-gray-800 mb-6">$0.00</p>
+                            <button id="charge-balance-btn" class="w-full bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition font-semibold">شحن الرصيد عبر الدعم</button>
+                        </div>
                     </div>
                 </div>
                 
                 <!-- Admin Panel -->
                 <div id="admin-page" class="hidden p-6">
-                    <header class="flex items-center mb-6">
-                        <button class="back-btn p-2 rounded-full hover:bg-gray-200 ml-4"><i data-lucide="arrow-right" class="w-6 h-6"></i></button>
-                        <h2 class="text-2xl font-bold">لوحة تحكم الأدمن</h2>
-                    </header>
-                    <div class="bg-white p-8 rounded-xl shadow-lg space-y-6">
-                        <h3 class="text-xl font-semibold text-center">شحن رصيد المستخدمين</h3>
-                        <div>
-                            <label for="admin-user-identifier" class="block mb-2 text-sm font-medium text-gray-700">بريد إلكتروني أو ID المستخدم</label>
-                            <input type="text" id="admin-user-identifier" placeholder="e.g., user@example.com or user_id_string" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <div class="max-w-4xl mx-auto">
+                        <header class="flex items-center mb-6">
+                            <button class="back-btn p-2 rounded-full hover:bg-white/20 ml-4 text-white">
+                                <i data-lucide="arrow-right" class="w-6 h-6"></i>
+                            </button>
+                            <h2 class="text-2xl font-bold text-white">لوحة تحكم الأدمن</h2>
+                        </header>
+                        
+                        <!-- Admin Tabs -->
+                        <div class="mb-6">
+                            <div class="flex flex-wrap gap-2 border-b border-white/20">
+                                <button id="admin-tab-charge" class="admin-tab px-4 py-2 border-b-2 border-indigo-400 text-white font-semibold">شحن الرصيد</button>
+                                <button id="admin-tab-agents" class="admin-tab px-4 py-2 text-white/70 hover:text-white">وكلاء الشحن</button>
+                                <button id="admin-tab-merchants" class="admin-tab px-4 py-2 text-white/70 hover:text-white">التجار</button>
+                                <button id="admin-tab-apps" class="admin-tab px-4 py-2 text-white/70 hover:text-white">التطبيقات</button>
+                                <button id="admin-tab-content" class="admin-tab px-4 py-2 text-white/70 hover:text-white">المحتوى</button>
+                            </div>
                         </div>
-                        <div>
-                            <label for="admin-charge-amount" class="block mb-2 text-sm font-medium text-gray-700">المبلغ (بالدولار)</label>
-                            <input type="number" id="admin-charge-amount" placeholder="e.g., 50" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        
+                        <!-- Charge Balance Tab -->
+                        <div id="admin-content-charge" class="admin-content bg-white/95 backdrop-blur-md p-8 rounded-xl shadow-xl space-y-6">
+                            <h3 class="text-xl font-semibold text-center">شحن رصيد المستخدمين</h3>
+                            <div>
+                                <label for="admin-user-identifier" class="block mb-2 text-sm font-medium text-gray-700">بريد إلكتروني أو ID المستخدم</label>
+                                <input type="text" id="admin-user-identifier" placeholder="e.g., user@example.com" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                            <div>
+                                <label for="admin-charge-amount" class="block mb-2 text-sm font-medium text-gray-700">المبلغ (بالدولار)</label>
+                                <input type="number" id="admin-charge-amount" placeholder="e.g., 50" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                            <button id="admin-charge-btn" class="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition font-semibold">
+                                <i data-lucide="check-circle" class="inline w-5 h-5 ml-2"></i>
+                                تنفيذ الشحن
+                            </button>
                         </div>
-                        <button id="admin-charge-btn" class="w-full bg-green-600 text-white py-3 rounded-md hover:bg-green-700 transition">
-                            <i data-lucide="check-circle" class="inline w-5 h-5 ml-2"></i>
-                            تنفيذ الشحن
-                        </button>
+                        
+                        <!-- Agents Tab -->
+                        <div id="admin-content-agents" class="admin-content hidden bg-white/95 backdrop-blur-md p-8 rounded-xl shadow-xl space-y-6">
+                            <h3 class="text-xl font-semibold text-center">إدارة وكلاء الشحن</h3>
+                            <div>
+                                <label for="agent-email" class="block mb-2 text-sm font-medium text-gray-700">البريد الإلكتروني للوكيل</label>
+                                <input type="email" id="agent-email" placeholder="agent@example.com" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                            <button id="add-agent-btn" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-semibold">
+                                <i data-lucide="user-plus" class="inline w-5 h-5 ml-2"></i>
+                                إضافة وكيل شحن
+                            </button>
+                            <div id="agents-list" class="mt-6">
+                                <h4 class="font-semibold mb-4">قائمة الوكلاء الحاليين:</h4>
+                                <div id="agents-container" class="space-y-2">
+                                    <!-- Agents will be listed here -->
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Merchants Tab -->
+                        <div id="admin-content-merchants" class="admin-content hidden bg-white/95 backdrop-blur-md p-8 rounded-xl shadow-xl space-y-6">
+                            <h3 class="text-xl font-semibold text-center">إدارة التجار</h3>
+                            <div>
+                                <label for="merchant-email" class="block mb-2 text-sm font-medium text-gray-700">البريد الإلكتروني للتاجر</label>
+                                <input type="email" id="merchant-email" placeholder="merchant@example.com" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                            <button id="add-merchant-btn" class="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition font-semibold">
+                                <i data-lucide="store" class="inline w-5 h-5 ml-2"></i>
+                                إضافة تاجر
+                            </button>
+                            <div id="merchants-list" class="mt-6">
+                                <h4 class="font-semibold mb-4">قائمة التجار الحاليين:</h4>
+                                <div id="merchants-container" class="space-y-2">
+                                    <!-- Merchants will be listed here -->
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Apps Tab -->
+                        <div id="admin-content-apps" class="admin-content hidden bg-white/95 backdrop-blur-md p-8 rounded-xl shadow-xl space-y-6">
+                            <h3 class="text-xl font-semibold text-center">إدارة تطبيقات التواصل الاجتماعي</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="app-name" class="block mb-2 text-sm font-medium text-gray-700">اسم التطبيق</label>
+                                    <input type="text" id="app-name" placeholder="مثال: واتساب" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                </div>
+                                <div>
+                                    <label for="app-price" class="block mb-2 text-sm font-medium text-gray-700">سعر الشحن (بالدولار)</label>
+                                    <input type="number" id="app-price" placeholder="10" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                </div>
+                            </div>
+                            <div>
+                                <label for="app-icon" class="block mb-2 text-sm font-medium text-gray-700">رابط أيقونة التطبيق</label>
+                                <input type="url" id="app-icon" placeholder="https://example.com/icon.png" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                            <button id="add-app-btn" class="w-full bg-purple-600 text-white py-3 rounded-lg hover:bg-purple-700 transition font-semibold">
+                                <i data-lucide="smartphone" class="inline w-5 h-5 ml-2"></i>
+                                إضافة تطبيق
+                            </button>
+                            <div id="apps-list" class="mt-6">
+                                <h4 class="font-semibold mb-4">التطبيقات المتاحة:</h4>
+                                <div id="apps-container" class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                    <!-- Apps will be listed here -->
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Content Management Tab -->
+                        <div id="admin-content-content" class="admin-content hidden bg-white/95 backdrop-blur-md p-8 rounded-xl shadow-xl space-y-6">
+                            <h3 class="text-xl font-semibold text-center">إدارة المحتوى</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="banner-image-url" class="block mb-2 text-sm font-medium text-gray-700">رابط بنر داخلي</label>
+                                    <input type="url" id="banner-image-url" placeholder="https://example.com/banner.jpg" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                </div>
+                                <div>
+                                    <label for="video-banner-url" class="block mb-2 text-sm font-medium text-gray-700">رابط بنر الفيديو</label>
+                                    <input type="url" id="video-banner-url" placeholder="https://example.com/video.mp4" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                </div>
+                            </div>
+                            <div class="flex space-x-2 space-x-reverse">
+                                <button id="add-banner-btn" class="flex-1 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-semibold">
+                                    إضافة بنر داخلي
+                                </button>
+                                <button id="add-video-banner-btn" class="flex-1 bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 transition font-semibold">
+                                    إضافة بنر فيديو
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Social Apps Page -->
+                <div id="social-apps-page" class="hidden p-6">
+                    <div class="max-w-4xl mx-auto">
+                        <header class="flex items-center mb-6">
+                            <button class="back-btn p-2 rounded-full hover:bg-white/20 ml-4 text-white">
+                                <i data-lucide="arrow-right" class="w-6 h-6"></i>
+                            </button>
+                            <h2 class="text-2xl font-bold text-white">شحن تطبيقات التواصل الاجتماعي</h2>
+                        </header>
+                        <div id="social-apps-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                            <!-- Social apps will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Agent Panel -->
+                <div id="agent-page" class="hidden p-6">
+                    <div class="max-w-md mx-auto">
+                        <header class="flex items-center mb-6">
+                            <button class="back-btn p-2 rounded-full hover:bg-white/20 ml-4 text-white">
+                                <i data-lucide="arrow-right" class="w-6 h-6"></i>
+                            </button>
+                            <h2 class="text-2xl font-bold text-white">لوحة وكيل الشحن</h2>
+                        </header>
+                        <div class="bg-white/95 backdrop-blur-md p-8 rounded-xl shadow-xl space-y-6">
+                            <h3 class="text-xl font-semibold text-center">شحن رصيد المستخدمين</h3>
+                            <div>
+                                <label for="agent-user-identifier" class="block mb-2 text-sm font-medium text-gray-700">بريد إلكتروني أو ID المستخدم</label>
+                                <input type="text" id="agent-user-identifier" placeholder="user@example.com" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                            <div>
+                                <label for="agent-charge-amount" class="block mb-2 text-sm font-medium text-gray-700">المبلغ (بالدولار)</label>
+                                <input type="number" id="agent-charge-amount" placeholder="50" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                            <button id="agent-charge-btn" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-semibold">
+                                <i data-lucide="zap" class="inline w-5 h-5 ml-2"></i>
+                                تنفيذ الشحن
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Merchant Panel -->
+                <div id="merchant-page" class="hidden p-6">
+                    <div class="max-w-md mx-auto">
+                        <header class="flex items-center mb-6">
+                            <button class="back-btn p-2 rounded-full hover:bg-white/20 ml-4 text-white">
+                                <i data-lucide="arrow-right" class="w-6 h-6"></i>
+                            </button>
+                            <h2 class="text-2xl font-bold text-white">لوحة التاجر</h2>
+                        </header>
+                        <div class="bg-white/95 backdrop-blur-md p-8 rounded-xl shadow-xl space-y-6">
+                            <h3 class="text-xl font-semibold text-center">إضافة بنر جديد</h3>
+                            <div>
+                                <label for="banner-title" class="block mb-2 text-sm font-medium text-gray-700">عنوان البنر</label>
+                                <input type="text" id="banner-title" placeholder="عنوان البنر" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                            <div>
+                                <label for="banner-image" class="block mb-2 text-sm font-medium text-gray-700">رابط صورة البنر</label>
+                                <input type="url" id="banner-image" placeholder="https://example.com/banner.jpg" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                            <div>
+                                <label for="banner-price" class="block mb-2 text-sm font-medium text-gray-700">سعر البنر (بالدولار)</label>
+                                <input type="number" id="banner-price" placeholder="25" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                            <button id="add-banner-btn" class="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition font-semibold">
+                                <i data-lucide="image" class="inline w-5 h-5 ml-2"></i>
+                                إضافة البنر
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cart Page -->
+                <div id="cart-page" class="hidden p-6">
+                    <div class="max-w-2xl mx-auto">
+                        <header class="flex items-center mb-6">
+                            <button class="back-btn p-2 rounded-full hover:bg-white/20 ml-4 text-white">
+                                <i data-lucide="arrow-right" class="w-6 h-6"></i>
+                            </button>
+                            <h2 class="text-2xl font-bold text-white">السلة</h2>
+                        </header>
+                        <div id="cart-items" class="space-y-4">
+                            <!-- Cart items will be displayed here -->
+                        </div>
+                        <div id="cart-empty" class="text-center py-12 hidden">
+                            <i data-lucide="shopping-cart" class="w-16 h-16 mx-auto text-white/60 mb-4"></i>
+                            <p class="text-white/80">السلة فارغة</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Change Password Page -->
+                <div id="change-password-page" class="hidden p-6">
+                    <div class="max-w-md mx-auto">
+                        <header class="flex items-center mb-6">
+                            <button class="back-btn p-2 rounded-full hover:bg-white/20 ml-4 text-white">
+                                <i data-lucide="arrow-right" class="w-6 h-6"></i>
+                            </button>
+                            <h2 class="text-2xl font-bold text-white">تغيير كلمة المرور</h2>
+                        </header>
+                        <div class="bg-white/95 backdrop-blur-md p-8 rounded-xl shadow-xl space-y-6">
+                            <div class="text-center">
+                                <div class="security-lock">
+                                    <i data-lucide="shield-check" class="w-6 h-6"></i>
+                                </div>
+                                <p class="text-sm text-gray-600">للحساب الرسمي java88449@gmail.com فقط</p>
+                            </div>
+                            <div>
+                                <label for="current-password" class="block mb-2 text-sm font-medium text-gray-700">كلمة المرور الحالية</label>
+                                <input type="password" id="current-password" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                            <div>
+                                <label for="new-password" class="block mb-2 text-sm font-medium text-gray-700">كلمة المرور الجديدة</label>
+                                <input type="password" id="new-password" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                            <div>
+                                <label for="confirm-password" class="block mb-2 text-sm font-medium text-gray-700">تأكيد كلمة المرور الجديدة</label>
+                                <input type="password" id="confirm-password" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                            <button id="change-password-btn" class="w-full bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition font-semibold">
+                                <i data-lucide="key" class="inline w-5 h-5 ml-2"></i>
+                                تغيير كلمة المرور
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -157,34 +798,86 @@
 
             <!-- Sidebar -->
             <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden"></div>
-            <nav id="sidebar" class="fixed top-0 right-0 h-full w-72 bg-white shadow-xl z-40 transform translate-x-full transition-transform duration-300 ease-in-out">
+            <nav id="sidebar" class="sidebar fixed top-0 right-0 h-full w-72 shadow-xl z-40 transform translate-x-full transition-transform duration-300 ease-in-out">
                 <div class="p-4">
-                    <div class="flex flex-col items-center text-center border-b pb-4">
-                        <div class="w-20 h-20 rounded-full bg-indigo-100 flex items-center justify-center text-4xl mb-3"><i data-lucide="user-circle-2" class="text-indigo-500"></i></div>
+                    <div class="flex flex-col items-center text-center border-b border-gray-200 pb-4">
+                        <div class="w-20 h-20 rounded-full bg-indigo-100 flex items-center justify-center text-4xl mb-3">
+                            <i data-lucide="user-circle-2" class="text-indigo-500"></i>
+                        </div>
+                        <div id="user-badges" class="mb-2">
+                            <!-- User badges will be displayed here -->
+                        </div>
                         <p id="user-email" class="font-semibold text-gray-700"></p>
                     </div>
                     <div id="sidebar-menu" class="mt-4 space-y-1">
-                        <!-- Admin button will be inserted here dynamically -->
-                        <button id="wallet-btn" class="w-full flex items-center p-3 rounded-md hover:bg-gray-100 transition-colors text-gray-700"><i data-lucide="wallet" class="w-5 h-5 ml-3 text-gray-600"></i><span>المحفظة</span></button>
-                        <button id="chat-btn" class="w-full flex items-center p-3 rounded-md hover:bg-gray-100 transition-colors text-gray-700"><i data-lucide="message-square" class="w-5 h-5 ml-3 text-gray-600"></i><span id="chat-sidebar-label">الدعم الفني</span></button>
-                        <a href="#" class="flex items-center p-3 rounded-md hover:bg-gray-100 transition-colors text-gray-700"><i data-lucide="shield" class="w-5 h-5 ml-3 text-gray-600"></i><span>سياسة الخصوصية</span></a>
-                        <a href="#" class="flex items-center p-3 rounded-md hover:bg-gray-100 transition-colors text-gray-700"><i data-lucide="file-text" class="w-5 h-5 ml-3 text-gray-600"></i><span>اتفاقية المستخدم</span></a>
-                        <button id="logout-btn" class="w-full flex items-center p-3 mt-4 rounded-md hover:bg-red-50 text-red-600 transition-colors"><i data-lucide="log-out" class="w-5 h-5 ml-3"></i><span>تسجيل الخروج</span></button>
+                        <!-- Dynamic buttons will be inserted here -->
+                        <button id="wallet-btn" class="w-full flex items-center p-3 rounded-lg hover:bg-gray-100 transition-colors text-gray-700">
+                            <i data-lucide="wallet" class="w-5 h-5 ml-3 text-gray-600"></i>
+                            <span>المحفظة</span>
+                        </button>
+                        <button id="social-apps-btn" class="w-full flex items-center p-3 rounded-lg hover:bg-gray-100 transition-colors text-gray-700">
+                            <i data-lucide="smartphone" class="w-5 h-5 ml-3 text-gray-600"></i>
+                            <span>تطبيقات التواصل</span>
+                        </button>
+                        <button id="change-password-btn" class="w-full flex items-center p-3 rounded-lg hover:bg-gray-100 transition-colors text-gray-700">
+                            <i data-lucide="key" class="w-5 h-5 ml-3 text-gray-600"></i>
+                            <span>تغيير كلمة المرور</span>
+                        </button>
+                        <button id="chat-btn" class="w-full flex items-center p-3 rounded-lg hover:bg-gray-100 transition-colors text-gray-700">
+                            <i data-lucide="message-square" class="w-5 h-5 ml-3 text-gray-600"></i>
+                            <span id="chat-sidebar-label">الدعم الفني</span>
+                        </button>
+                        <a href="#" class="flex items-center p-3 rounded-lg hover:bg-gray-100 transition-colors text-gray-700">
+                            <i data-lucide="shield" class="w-5 h-5 ml-3 text-gray-600"></i>
+                            <span>سياسة الخصوصية</span>
+                        </a>
+                        <a href="#" class="flex items-center p-3 rounded-lg hover:bg-gray-100 transition-colors text-gray-700">
+                            <i data-lucide="file-text" class="w-5 h-5 ml-3 text-gray-600"></i>
+                            <span>اتفاقية المستخدم</span>
+                        </a>
+                        <button id="logout-btn" class="w-full flex items-center p-3 mt-4 rounded-lg hover:bg-red-50 text-red-600 transition-colors">
+                            <i data-lucide="log-out" class="w-5 h-5 ml-3"></i>
+                            <span>تسجيل الخروج</span>
+                        </button>
                     </div>
                 </div>
             </nav>
         </div>
     </div>
+
+    <!-- Modals -->
+    <!-- Social App Charge Modal -->
+    <div id="app-charge-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white/95 backdrop-blur-md rounded-xl p-6 w-full max-w-md">
+            <h3 id="modal-app-name" class="text-xl font-bold text-center mb-4"></h3>
+            <div class="space-y-4">
+                <div>
+                    <label for="modal-app-id" class="block mb-2 text-sm font-medium text-gray-700">ID التطبيق الخاص بك</label>
+                    <input type="text" id="modal-app-id" placeholder="أدخل ID التطبيق" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label for="modal-app-amount" class="block mb-2 text-sm font-medium text-gray-700">مبلغ الشحن (بالدولار)</label>
+                    <input type="number" id="modal-app-amount" placeholder="10" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div class="text-center text-sm text-gray-600">
+                    <p>سعر الشحن: $<span id="modal-app-price">0</span> لكل دولار</p>
+                </div>
+            </div>
+            <div class="flex space-x-2 space-x-reverse mt-6">
+                <button id="modal-charge-btn" class="flex-1 bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition font-semibold">شحن</button>
+                <button id="modal-cancel-btn" class="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-400 transition font-semibold">إلغاء</button>
+            </div>
+        </div>
+    </div>
     
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, getDocs, getDoc, doc, addDoc, query, onSnapshot, orderBy, serverTimestamp, runTransaction, setDoc, where, writeBatch } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-functions.js";
+        import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updatePassword, reauthenticateWithCredential, EmailAuthProvider, sendEmailVerification } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, getDocs, getDoc, doc, addDoc, query, onSnapshot, orderBy, serverTimestamp, runTransaction, setDoc, where, writeBatch, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // --- Firebase Configuration ---
         const firebaseConfig = {
-            apiKey: "AIzaSyCDOnNTsdEL_NcMWc30IanC01OPWj-gao8", // Keep your actual API key
+            apiKey: "AIzaSyCDOnNTsdEL_NcMWc30IanC01OPWj-gao8",
             authDomain: "mahmoud-17a51.firebaseapp.com",
             databaseURL: "https://mahmoud-17a51-default-rtdb.firebaseio.com",
             projectId: "mahmoud-17a51",
@@ -197,10 +890,10 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        const functions = getFunctions(app); // Initialize Cloud Functions
 
         // --- Admin & Support Configuration ---
         const ADMIN_EMAIL = 'java88449@gmail.com';
+        const ADMIN_PASSWORD = '561889';
 
         // --- DOM Elements & State ---
         const loadingOverlay = document.getElementById('loading-overlay');
@@ -222,17 +915,28 @@
             wallet: document.getElementById('wallet-page'),
             chat: document.getElementById('chat-page'),
             admin: document.getElementById('admin-page'),
+            socialApps: document.getElementById('social-apps-page'),
+            agent: document.getElementById('agent-page'),
+            merchant: document.getElementById('merchant-page'),
+            cart: document.getElementById('cart-page'),
+            changePassword: document.getElementById('change-password-page'),
         };
         
         let walletUnsubscribe = null;
         let chatUnsubscribe = null;
-        let currentChatTarget = null; // For support view
+        let currentChatTarget = null;
+        let currentUser = null;
+        let cartItems = [];
 
         const dashboardCategories = [
-            { id: 'banners', title: 'مركز البنرات', icon: 'image' }, { id: 'celebrityGifts', title: 'هدايا المشاهير', icon: 'gift' },
-            { id: 'svgaGifts', title: 'هدايا SVGA', icon: 'gem' }, { id: 'svgaFrames', title: 'إطارات SVGA', icon: 'square' },
-            { id: 'roomBackgrounds', title: 'خلفيات روم', icon: 'wallpaper' }, { id: 'promoVideos', title: 'فيديو ترويجي', icon: 'video' },
-            { id: 'shippingSchedule', title: 'جدول الشحن', icon: 'table' }, { id: 'animatedImages', title: 'صور متحركة', icon: 'film' }
+            { id: 'banners', title: 'مركز البنرات', icon: 'image' }, 
+            { id: 'celebrityGifts', title: 'هدايا المشاهير', icon: 'gift' },
+            { id: 'svgaGifts', title: 'هدايا SVGA', icon: 'gem' }, 
+            { id: 'svgaFrames', title: 'إطارات SVGA', icon: 'square' },
+            { id: 'roomBackgrounds', title: 'خلفيات روم', icon: 'wallpaper' }, 
+            { id: 'promoVideos', title: 'فيديو ترويجي', icon: 'video' },
+            { id: 'shippingSchedule', title: 'جدول الشحن', icon: 'table' }, 
+            { id: 'animatedImages', title: 'صور متحركة', icon: 'film' }
         ];
 
         // --- Toast Notification ---
@@ -243,43 +947,342 @@
             setTimeout(() => { toastEl.classList.remove('show'); }, 3000);
         }
 
+        // --- Cart Functions ---
+        function updateCartBadge() {
+            const badge = document.getElementById('cart-badge');
+            if (cartItems.length > 0) {
+                badge.textContent = cartItems.length;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        function addToCart(item) {
+            const cartItem = {
+                id: Date.now(),
+                ...item,
+                timestamp: new Date()
+            };
+            cartItems.push(cartItem);
+            updateCartBadge();
+            
+            // Show different notifications based on item type
+            if (item.type === 'balance_charge') {
+                showToast(`تم شحن مبلغ $${item.amount} على حسابك`);
+            } else if (item.type === 'app_charge') {
+                showToast(`تم شحن ${item.amount} دولار في ${item.appName} بنجاح!`);
+            } else {
+                showToast('تم إضافة العنصر إلى السلة');
+            }
+            
+            // Remove from cart after 1 hour (3600000 ms) and show success message
+            setTimeout(() => {
+                const itemIndex = cartItems.findIndex(ci => ci.id === cartItem.id);
+                if (itemIndex !== -1) {
+                    cartItems.splice(itemIndex, 1);
+                    updateCartBadge();
+                    showSuccessMessage(item);
+                }
+            }, 3600000); // 1 hour = 3600000 milliseconds
+        }
+
+        function showSuccessMessage(item) {
+            let message = 'تم إتمام العملية بنجاح';
+            
+            if (item.type === 'purchase') {
+                message = 'تم شراء المنتج بنجاح';
+            } else if (item.type === 'app_charge') {
+                message = `تم شحن ${item.appName} بنجاح`;
+            } else if (item.type === 'balance_charge') {
+                message = 'تم شحن الرصيد بنجاح';
+            }
+            
+            // Create success notification element
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success-message fixed top-20 right-4 bg-green-500 text-white p-4 rounded-lg shadow-lg z-50';
+            successDiv.innerHTML = `
+                <div class="flex items-center">
+                    <i data-lucide="check-circle" class="w-5 h-5 mr-2"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            document.body.appendChild(successDiv);
+            lucide.createIcons();
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                if (successDiv.parentNode) {
+                    successDiv.parentNode.removeChild(successDiv);
+                }
+            }, 3000);
+        }
+
+        // --- User Role Management ---
+        async function checkUserRole(user) {
+            try {
+                const userDoc = await getDoc(doc(db, 'users', user.uid));
+                const userData = userDoc.exists() ? userDoc.data() : {};
+                
+                return {
+                    isAdmin: user.email === ADMIN_EMAIL,
+                    isAgent: userData.isAgent || false,
+                    isMerchant: userData.isMerchant || false
+                };
+            } catch (error) {
+                console.error('Error checking user role:', error);
+                return { isAdmin: false, isAgent: false, isMerchant: false };
+            }
+        }
+
+        async function updateUserBadges(user) {
+            const roles = await checkUserRole(user);
+            const badgesContainer = document.getElementById('user-badges');
+            badgesContainer.innerHTML = '';
+            
+            // Special badges for admin account
+            if (user.email === ADMIN_EMAIL) {
+                const managerBadge = document.createElement('div');
+                managerBadge.className = 'manager-badge';
+                managerBadge.textContent = 'Manager';
+                badgesContainer.appendChild(managerBadge);
+                
+                const officeBadge = document.createElement('div');
+                officeBadge.className = 'office-badge';
+                officeBadge.textContent = 'Office';
+                badgesContainer.appendChild(officeBadge);
+            }
+            
+            if (roles.isAgent) {
+                const agentBadge = document.createElement('div');
+                agentBadge.className = 'agent-badge';
+                agentBadge.textContent = 'وكيل شحن رسمي';
+                badgesContainer.appendChild(agentBadge);
+            }
+            
+            if (roles.isMerchant) {
+                const merchantBadge = document.createElement('div');
+                merchantBadge.className = 'merchant-badge';
+                merchantBadge.textContent = 'تاجر معتمد';
+                badgesContainer.appendChild(merchantBadge);
+            }
+        }
+
+        // --- Admin Functions ---
+        async function chargeUserBalance(identifier, amount) {
+            try {
+                // Check if admin has infinite balance
+                if (currentUser.email !== ADMIN_EMAIL) {
+                    const adminWalletRef = doc(db, 'wallets', currentUser.uid);
+                    const adminWallet = await getDoc(adminWalletRef);
+                    const adminBalance = adminWallet.exists() ? adminWallet.data().balance || 0 : 0;
+                    
+                    if (adminBalance < amount) {
+                        throw new Error('رصيدك غير كافٍ لإتمام عملية الشحن');
+                    }
+                }
+                
+                // Find user by email
+                const usersQuery = query(collection(db, 'users'), where('email', '==', identifier));
+                const usersSnapshot = await getDocs(usersQuery);
+                
+                if (usersSnapshot.empty) {
+                    throw new Error('المستخدم غير موجود');
+                }
+                
+                const targetUserDoc = usersSnapshot.docs[0];
+                const targetUserId = targetUserDoc.id;
+                
+                await runTransaction(db, async (transaction) => {
+                    const targetWalletRef = doc(db, 'wallets', targetUserId);
+                    const targetWallet = await transaction.get(targetWalletRef);
+                    
+                    const currentBalance = targetWallet.exists() ? targetWallet.data().balance || 0 : 0;
+                    const newBalance = currentBalance + amount;
+                    
+                    transaction.set(targetWalletRef, { balance: newBalance }, { merge: true });
+                    
+                    // Deduct from agent balance if not admin
+                    if (currentUser.email !== ADMIN_EMAIL) {
+                        const agentWalletRef = doc(db, 'wallets', currentUser.uid);
+                        const agentWallet = await transaction.get(agentWalletRef);
+                        const agentBalance = agentWallet.exists() ? agentWallet.data().balance || 0 : 0;
+                        transaction.update(agentWalletRef, { balance: agentBalance - amount });
+                    }
+                });
+                
+                // Send notification to target user
+                if (targetUserId !== currentUser.uid) {
+                    // This would be handled by the cart system for the target user
+                    showToast(`تم شحن رصيد ${identifier} بنجاح`);
+                }
+                
+                return { success: true, email: identifier };
+            } catch (error) {
+                throw error;
+            }
+        }
+
+        // --- Social Apps Functions ---
+        async function loadSocialApps() {
+            try {
+                const appsSnapshot = await getDocs(collection(db, 'socialApps'));
+                const appsGrid = document.getElementById('social-apps-grid');
+                appsGrid.innerHTML = '';
+                
+                if (appsSnapshot.empty) {
+                    appsGrid.innerHTML = '<p class="col-span-full text-center text-white/80">لا توجد تطبيقات متاحة حالياً</p>';
+                    return;
+                }
+                
+                appsSnapshot.forEach(doc => {
+                    const app = doc.data();
+                    const appCard = document.createElement('div');
+                    appCard.className = 'bg-white/95 backdrop-blur-md rounded-lg shadow-lg p-4 text-center cursor-pointer hover:shadow-xl transition-all transform hover:scale-105';
+                    appCard.innerHTML = `
+                        <img src="${app.icon}" alt="${app.name}" class="w-16 h-16 mx-auto mb-3 rounded-lg">
+                        <h3 class="font-semibold mb-2">${app.name}</h3>
+                        <p class="text-sm text-gray-600">$${app.price}/دولار</p>
+                    `;
+                    appCard.addEventListener('click', () => openAppChargeModal(app));
+                    appsGrid.appendChild(appCard);
+                });
+            } catch (error) {
+                console.error('Error loading social apps:', error);
+            }
+        }
+
+        function openAppChargeModal(app) {
+            document.getElementById('modal-app-name').textContent = app.name;
+            document.getElementById('modal-app-price').textContent = app.price;
+            document.getElementById('modal-app-id').value = '';
+            document.getElementById('modal-app-amount').value = '';
+            document.getElementById('app-charge-modal').classList.remove('hidden');
+            
+            document.getElementById('modal-charge-btn').onclick = () => chargeApp(app);
+        }
+
+        async function chargeApp(app) {
+            const appId = document.getElementById('modal-app-id').value.trim();
+            const amount = parseFloat(document.getElementById('modal-app-amount').value);
+            
+            if (!appId || !amount || amount <= 0) {
+                showToast('الرجاء إدخال جميع البيانات بشكل صحيح', true);
+                return;
+            }
+            
+            const totalCost = amount * app.price;
+            
+            try {
+                await runTransaction(db, async (transaction) => {
+                    const walletRef = doc(db, 'wallets', currentUser.uid);
+                    const walletDoc = await transaction.get(walletRef);
+                    
+                    if (!walletDoc.exists() || walletDoc.data().balance < totalCost) {
+                        throw new Error('رصيدك غير كافٍ لإتمام عملية الشحن');
+                    }
+                    
+                    const currentBalance = walletDoc.data().balance;
+                    transaction.update(walletRef, { balance: currentBalance - totalCost });
+                });
+                
+                // Add to cart
+                addToCart({
+                    type: 'app_charge',
+                    appName: app.name,
+                    appId: appId,
+                    amount: amount,
+                    cost: totalCost
+                });
+                
+                document.getElementById('app-charge-modal').classList.add('hidden');
+                showToast(`تم شحن ${amount} دولار في ${app.name} بنجاح!`);
+                
+            } catch (error) {
+                showToast(error.message, true);
+            }
+        }
+
         // --- AUTHENTICATION & REAL-TIME LISTENERS ---
-        onAuthStateChanged(auth, user => {
+        onAuthStateChanged(auth, async user => {
             if (walletUnsubscribe) walletUnsubscribe();
             if (chatUnsubscribe) chatUnsubscribe();
             
-            // Clear admin button on auth state change
-            const existingAdminBtn = document.getElementById('admin-panel-btn');
-            if (existingAdminBtn) existingAdminBtn.remove();
+            // Clear dynamic buttons
+            const existingButtons = ['admin-panel-btn', 'agent-panel-btn', 'merchant-panel-btn'];
+            existingButtons.forEach(id => {
+                const btn = document.getElementById(id);
+                if (btn) btn.remove();
+            });
             
             if (user) {
+                currentUser = user;
                 mainApp.classList.remove('hidden');
                 loginPage.classList.add('hidden');
-                document.getElementById('chat-sidebar-label').textContent = user.email === ADMIN_EMAIL ? 'لوحة تحكم الدعم' : 'الدعم الفني';
                 
-                // --- ADMIN-SPECIFIC UI ---
-                if (user.email === ADMIN_EMAIL) {
+                // Check if email is verified
+                if (!user.emailVerified && user.email !== ADMIN_EMAIL) {
+                    showToast('يرجى تفعيل حسابك عبر الرابط المرسل إلى بريدك الإلكتروني', true);
+                }
+                
+                const roles = await checkUserRole(user);
+                
+                // Update sidebar label
+                document.getElementById('chat-sidebar-label').textContent = 
+                    roles.isAdmin ? 'لوحة تحكم الدعم' : 'الدعم الفني';
+                
+                // Add role-specific buttons
+                if (roles.isAdmin) {
                     const adminBtn = document.createElement('button');
                     adminBtn.id = 'admin-panel-btn';
-                    adminBtn.className = 'w-full flex items-center p-3 rounded-md hover:bg-indigo-50 transition-colors text-indigo-600 font-bold';
+                    adminBtn.className = 'w-full flex items-center p-3 rounded-lg hover:bg-indigo-50 transition-colors text-indigo-600 font-bold';
                     adminBtn.innerHTML = `<i data-lucide="shield-check" class="w-5 h-5 ml-3"></i><span>لوحة التحكم</span>`;
                     adminBtn.addEventListener('click', () => showPage('admin'));
                     sidebarMenu.insertAdjacentElement('afterbegin', adminBtn);
+                }
+                
+                if (roles.isAgent) {
+                    const agentBtn = document.createElement('button');
+                    agentBtn.id = 'agent-panel-btn';
+                    agentBtn.className = 'w-full flex items-center p-3 rounded-lg hover:bg-blue-50 transition-colors text-blue-600 font-bold';
+                    agentBtn.innerHTML = `<i data-lucide="zap" class="w-5 h-5 ml-3"></i><span>لوحة وكيل الشحن</span>`;
+                    agentBtn.addEventListener('click', () => showPage('agent'));
+                    sidebarMenu.insertAdjacentElement('afterbegin', agentBtn);
+                }
+                
+                if (roles.isMerchant) {
+                    const merchantBtn = document.createElement('button');
+                    merchantBtn.id = 'merchant-panel-btn';
+                    merchantBtn.className = 'w-full flex items-center p-3 rounded-lg hover:bg-green-50 transition-colors text-green-600 font-bold';
+                    merchantBtn.innerHTML = `<i data-lucide="store" class="w-5 h-5 ml-3"></i><span>لوحة التاجر</span>`;
+                    merchantBtn.addEventListener('click', () => showPage('merchant'));
+                    sidebarMenu.insertAdjacentElement('afterbegin', merchantBtn);
                 }
 
                 // Real-time wallet listener
                 const walletRef = doc(db, 'wallets', user.uid);
                 walletUnsubscribe = onSnapshot(walletRef, (docSnap) => {
-                    const balance = docSnap.exists() ? docSnap.data().balance || 0 : 0;
-                    document.getElementById('wallet-balance').textContent = `$${Number(balance).toFixed(2)}`;
+                    let balance = 0;
+                    if (user.email === ADMIN_EMAIL) {
+                        balance = '∞'; // Infinite balance for admin
+                    } else {
+                        balance = docSnap.exists() ? docSnap.data().balance || 0 : 0;
+                        balance = `$${Number(balance).toFixed(2)}`;
+                    }
+                    document.getElementById('wallet-balance').textContent = balance;
                 });
 
-                // Set up user document (for email-based lookups by admin)
+                // Set up user document
                 const userDocRef = doc(db, "users", user.uid);
-                setDoc(userDocRef, { email: user.email }, { merge: true });
+                await setDoc(userDocRef, { email: user.email }, { merge: true });
+
+                // Update user badges
+                await updateUserBadges(user);
 
                 showPage('dashboard', user);
             } else {
+                currentUser = null;
                 mainApp.classList.add('hidden');
                 loginPage.classList.remove('hidden');
                 loginPrompt.classList.remove('hidden');
@@ -297,15 +1300,22 @@
             loginError.textContent = '';
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
+            
             try {
                 await signInWithEmailAndPassword(auth, email, password);
             } catch (error) {
                 if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
                     try {
                         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                        
+                        // Send email verification
+                        await sendEmailVerification(userCredential.user);
+                        
                         // Create wallet for new user
                         const walletRef = doc(db, "wallets", userCredential.user.uid);
                         await setDoc(walletRef, { balance: 0 });
+                        
+                        showToast('تم إنشاء الحساب بنجاح! تم إرسال رابط التفعيل إلى بريدك الإلكتروني');
                     } catch (signupError) {
                         loginError.textContent = 'خطأ في إنشاء الحساب.';
                         loadingOverlay.classList.add('hidden');
@@ -316,43 +1326,60 @@
                 }
             }
         });
-        document.getElementById('logout-btn').addEventListener('click', () => { loadingOverlay.classList.remove('hidden'); signOut(auth); });
 
         // --- PAGE NAVIGATION ---
         function showPage(pageName, context) {
             Object.values(pageContainers).forEach(p => p.classList.add('hidden'));
             pageContainers[pageName]?.classList.remove('hidden');
-            switch(pageName) {
-                case 'dashboard': showDashboard(context); break;
-                case 'content': showContentPage(context.id, context.title); break;
-                case 'wallet': /* Handled by sidebar button */ break;
-                case 'chat': showChatPage(); break;
-                case 'admin': /* Handled by sidebar button */ break;
-            }
+            
+            // Auto-close sidebar when navigating to any page
             closeSidebar();
+            
+            switch(pageName) {
+                case 'dashboard': 
+                    showDashboard(context); 
+                    break;
+                case 'content': 
+                    showContentPage(context.id, context.title); 
+                    break;
+                case 'socialApps': 
+                    loadSocialApps(); 
+                    break;
+                case 'cart': 
+                    showCartPage(); 
+                    break;
+                case 'admin':
+                    setupAdminTabs();
+                    break;
+            }
         }
 
         // --- DASHBOARD ---
         function showDashboard(user) {
             document.getElementById('user-email').textContent = user.email;
-            const container = pageContainers.dashboard.querySelector('.flex.overflow-x-auto');
+            const container = document.getElementById('categories-grid');
             container.innerHTML = ''; 
+            
             dashboardCategories.forEach(cat => {
                 const card = document.createElement('div');
-                card.className = 'flex-shrink-0 w-32 h-32 bg-white rounded-xl shadow p-4 flex flex-col items-center justify-center text-center cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all';
-                card.innerHTML = `<i data-lucide="${cat.icon}" class="w-10 h-10 text-indigo-500 mb-2"></i><span class="text-sm font-semibold">${cat.title}</span>`;
+                card.className = 'category-card';
+                card.innerHTML = `
+                    <i data-lucide="${cat.icon}" class="w-12 h-12 text-indigo-500 mb-3"></i>
+                    <span class="text-sm font-semibold text-gray-700">${cat.title}</span>
+                `;
                 card.addEventListener('click', () => showPage('content', { id: cat.id, title: cat.title }));
                 container.appendChild(card);
             });
             lucide.createIcons();
         }
-        
-        // --- CONTENT & PURCHASING (No changes here) ---
+
+        // --- CONTENT & PURCHASING ---
         async function showContentPage(categoryId, categoryTitle) {
             loadingOverlay.classList.remove('hidden');
             document.getElementById('content-title').textContent = categoryTitle;
             const display = document.getElementById('content-display');
-            display.innerHTML = '<p class="col-span-2 text-center">جاري تحميل المحتوى...</p>';
+            display.innerHTML = '<p class="col-span-full text-center text-white/80">جاري تحميل المحتوى...</p>';
+            
             try {
                 const q = query(collection(db, "content", categoryId, "items"));
                 const querySnapshot = await getDocs(q);
@@ -360,7 +1387,7 @@
                 renderContent(items);
             } catch (error) {
                 console.error("Error fetching content: ", error);
-                display.innerHTML = '<p class="col-span-2 text-center text-red-500">حدث خطأ أثناء تحميل المحتوى.</p>';
+                display.innerHTML = '<p class="col-span-full text-center text-red-400">حدث خطأ أثناء تحميل المحتوى.</p>';
             } finally {
                 loadingOverlay.classList.add('hidden');
             }
@@ -369,13 +1396,14 @@
         function renderContent(items) {
             const display = document.getElementById('content-display');
             if (items.length === 0) {
-                display.innerHTML = '<p class="col-span-2 text-center">لا يوجد محتوى في هذا القسم حاليًا.</p>';
+                display.innerHTML = '<p class="col-span-full text-center text-white/80">لا يوجد محتوى في هذا القسم حاليًا.</p>';
                 return;
             }
+            
             display.innerHTML = '';
             items.forEach(item => {
                 const wrapper = document.createElement('div');
-                wrapper.className = 'bg-white rounded-lg shadow overflow-hidden flex flex-col';
+                wrapper.className = 'bg-white/95 backdrop-blur-md rounded-lg shadow-lg overflow-hidden flex flex-col hover:shadow-xl transition-all transform hover:scale-105';
                 const contentContainer = document.createElement('div');
                 contentContainer.className = 'cursor-pointer flex-grow aspect-square';
                 
@@ -391,7 +1419,7 @@
                     info.className = 'p-3 flex items-center justify-between bg-gray-50';
                     info.innerHTML = `
                         <span class="font-bold text-indigo-600">$${Number(item.price).toFixed(2)}</span>
-                        <button class="buy-btn bg-indigo-600 text-white text-sm px-4 py-1 rounded-md hover:bg-indigo-700 transition">شراء</button>
+                        <button class="buy-btn bg-indigo-600 text-white text-sm px-4 py-2 rounded-lg hover:bg-indigo-700 transition font-semibold">شراء</button>
                     `;
                     info.querySelector('.buy-btn').addEventListener('click', () => handlePurchase(item));
                     wrapper.appendChild(info);
@@ -404,6 +1432,7 @@
             if (!confirm(`هل أنت متأكد من شراء هذا المنتج مقابل $${item.price.toFixed(2)}؟ سيتم خصم المبلغ من محفظتك.`)) {
                 return;
             }
+            
             loadingOverlay.classList.remove('hidden');
             const user = auth.currentUser;
             const itemPrice = Number(item.price);
@@ -421,6 +1450,14 @@
                     const newBalance = currentBalance - itemPrice;
                     transaction.update(walletRef, { balance: newBalance });
                 });
+                
+                addToCart({
+                    type: 'purchase',
+                    title: 'منتج مشترى',
+                    price: itemPrice,
+                    url: item.url
+                });
+                
                 showToast("تم الشراء بنجاح!");
             } catch (error) {
                 console.error("Purchase failed:", error);
@@ -431,38 +1468,165 @@
         }
 
         // --- ADMIN PANEL LOGIC ---
-        document.getElementById('admin-charge-btn').addEventListener('click', async () => {
-            const identifier = document.getElementById('admin-user-identifier').value.trim();
-            const amount = parseFloat(document.getElementById('admin-charge-amount').value);
+        function setupAdminTabs() {
+            const tabs = document.querySelectorAll('.admin-tab');
+            const contents = document.querySelectorAll('.admin-content');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const targetId = tab.id.replace('admin-tab-', 'admin-content-');
+                    
+                    tabs.forEach(t => {
+                        t.classList.remove('border-indigo-400', 'text-white', 'font-semibold');
+                        t.classList.add('text-white/70');
+                    });
+                    
+                    contents.forEach(c => c.classList.add('hidden'));
+                    
+                    tab.classList.add('border-indigo-400', 'text-white', 'font-semibold');
+                    tab.classList.remove('text-white/70');
+                    
+                    document.getElementById(targetId).classList.remove('hidden');
+                });
+            });
+            
+            loadAgentsList();
+            loadMerchantsList();
+            loadAppsList();
+        }
 
-            if (!identifier || !amount || amount <= 0) {
-                showToast("الرجاء إدخال جميع الحقول بشكل صحيح.", true);
-                return;
-            }
-            
-            loadingOverlay.classList.remove('hidden');
-            
+        async function loadAgentsList() {
             try {
-                // IMPORTANT: The function 'updateUserBalance' must be deployed to Firebase Cloud Functions
-                const updateUserBalance = httpsCallable(functions, 'updateUserBalance');
-                const result = await updateUserBalance({ identifier: identifier, amount: amount });
-
-                if (result.data.success) {
-                    showToast(`تم شحن رصيد ${result.data.email} بنجاح!`);
-                    document.getElementById('admin-user-identifier').value = '';
-                    document.getElementById('admin-charge-amount').value = '';
-                } else {
-                    throw new Error(result.data.error || "فشل تحديد المستخدم أو تحديث الرصيد.");
-                }
+                const usersQuery = query(collection(db, 'users'), where('isAgent', '==', true));
+                const snapshot = await getDocs(usersQuery);
+                const container = document.getElementById('agents-container');
+                container.innerHTML = '';
+                
+                snapshot.forEach(doc => {
+                    const user = doc.data();
+                    const agentEl = document.createElement('div');
+                    agentEl.className = 'flex items-center justify-between p-3 bg-gray-50 rounded-lg';
+                    agentEl.innerHTML = `
+                        <span>${user.email}</span>
+                        <button class="remove-agent-btn bg-red-500 text-white px-3 py-1 rounded-lg text-sm hover:bg-red-600 font-semibold" data-user-id="${doc.id}">
+                            إزالة
+                        </button>
+                    `;
+                    container.appendChild(agentEl);
+                });
+                
+                // Add event listeners for remove buttons
+                container.querySelectorAll('.remove-agent-btn').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        const userId = e.target.dataset.userId;
+                        await updateDoc(doc(db, 'users', userId), { isAgent: false });
+                        loadAgentsList();
+                        showToast('تم إزالة الوكيل بنجاح');
+                    });
+                });
             } catch (error) {
-                console.error("Balance charge error:", error);
-                showToast(error.message || "حدث خطأ أثناء عملية الشحن.", true);
-            } finally {
-                loadingOverlay.classList.add('hidden');
+                console.error('Error loading agents:', error);
             }
-        });
-        
-        // --- CHAT SYSTEM (No changes here) ---
+        }
+
+        async function loadMerchantsList() {
+            try {
+                const usersQuery = query(collection(db, 'users'), where('isMerchant', '==', true));
+                const snapshot = await getDocs(usersQuery);
+                const container = document.getElementById('merchants-container');
+                container.innerHTML = '';
+                
+                snapshot.forEach(doc => {
+                    const user = doc.data();
+                    const merchantEl = document.createElement('div');
+                    merchantEl.className = 'flex items-center justify-between p-3 bg-gray-50 rounded-lg';
+                    merchantEl.innerHTML = `
+                        <span>${user.email}</span>
+                        <button class="remove-merchant-btn bg-red-500 text-white px-3 py-1 rounded-lg text-sm hover:bg-red-600 font-semibold" data-user-id="${doc.id}">
+                            إزالة
+                        </button>
+                    `;
+                    container.appendChild(merchantEl);
+                });
+                
+                // Add event listeners for remove buttons
+                container.querySelectorAll('.remove-merchant-btn').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        const userId = e.target.dataset.userId;
+                        await updateDoc(doc(db, 'users', userId), { isMerchant: false });
+                        loadMerchantsList();
+                        showToast('تم إزالة التاجر بنجاح');
+                    });
+                });
+            } catch (error) {
+                console.error('Error loading merchants:', error);
+            }
+        }
+
+        async function loadAppsList() {
+            try {
+                const snapshot = await getDocs(collection(db, 'socialApps'));
+                const container = document.getElementById('apps-container');
+                container.innerHTML = '';
+                
+                snapshot.forEach(doc => {
+                    const app = doc.data();
+                    const appEl = document.createElement('div');
+                    appEl.className = 'bg-gray-50 rounded-lg p-4 text-center';
+                    appEl.innerHTML = `
+                        <img src="${app.icon}" alt="${app.name}" class="w-12 h-12 mx-auto mb-2 rounded">
+                        <h4 class="font-semibold text-sm">${app.name}</h4>
+                        <p class="text-xs text-gray-600">$${app.price}</p>
+                        <button class="remove-app-btn bg-red-500 text-white px-2 py-1 rounded-lg text-xs mt-2 hover:bg-red-600 font-semibold" data-app-id="${doc.id}">
+                            حذف
+                        </button>
+                    `;
+                    container.appendChild(appEl);
+                });
+                
+                // Add event listeners for remove buttons
+                container.querySelectorAll('.remove-app-btn').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        const appId = e.target.dataset.appId;
+                        await deleteDoc(doc(db, 'socialApps', appId));
+                        loadAppsList();
+                        showToast('تم حذف التطبيق بنجاح');
+                    });
+                });
+            } catch (error) {
+                console.error('Error loading apps:', error);
+            }
+        }
+
+        // --- CART PAGE ---
+        function showCartPage() {
+            const cartItemsContainer = document.getElementById('cart-items');
+            const cartEmpty = document.getElementById('cart-empty');
+            
+            if (cartItems.length === 0) {
+                cartItemsContainer.classList.add('hidden');
+                cartEmpty.classList.remove('hidden');
+            } else {
+                cartEmpty.classList.add('hidden');
+                cartItemsContainer.classList.remove('hidden');
+                cartItemsContainer.innerHTML = '';
+                
+                cartItems.forEach(item => {
+                    const itemEl = document.createElement('div');
+                    itemEl.className = 'cart-item bg-white/95 backdrop-blur-md rounded-lg shadow-lg p-4';
+                    itemEl.innerHTML = `
+                        <h3 class="font-semibold">${item.appName || item.title}</h3>
+                        <p class="text-sm text-gray-600">${item.appId ? `ID: ${item.appId}` : ''}</p>
+                        <p class="text-sm text-gray-600">${item.amount ? `المبلغ: $${item.amount}` : ''}</p>
+                        <p class="font-bold text-indigo-600">التكلفة: $${(item.cost || item.price).toFixed(2)}</p>
+                        <p class="text-xs text-gray-500">تم الإضافة: ${item.timestamp.toLocaleString('ar-EG')}</p>
+                    `;
+                    cartItemsContainer.appendChild(itemEl);
+                });
+            }
+        }
+
+        // --- CHAT SYSTEM ---
         function showChatPage() {
             if (chatUnsubscribe) chatUnsubscribe();
             currentChatTarget = null;
@@ -476,12 +1640,12 @@
         async function showSupportChatList() {
             const chatPage = pageContainers.chat;
             chatPage.innerHTML = `
-                <header class="flex items-center p-4 border-b">
-                    <button class="back-btn p-2 rounded-full hover:bg-gray-200 ml-4"><i data-lucide="arrow-right" class="w-6 h-6"></i></button>
-                    <h2 class="text-xl font-bold">لوحة تحكم الدعم</h2>
+                <header class="flex items-center p-4 border-b border-white/20">
+                    <button class="back-btn p-2 rounded-full hover:bg-white/20 ml-4 text-white"><i data-lucide="arrow-right" class="w-6 h-6"></i></button>
+                    <h2 class="text-xl font-bold text-white">لوحة تحكم الدعم</h2>
                 </header>
-                <div id="support-chat-list" class="flex-grow p-2 overflow-y-auto bg-gray-100">
-                    <p class="text-center p-4">جاري تحميل المحادثات...</p>
+                <div id="support-chat-list" class="flex-grow p-2 overflow-y-auto">
+                    <p class="text-center p-4 text-white/80">جاري تحميل المحادثات...</p>
                 </div>`;
             chatPage.querySelector('.back-btn').addEventListener('click', () => showPage('dashboard', auth.currentUser));
             lucide.createIcons();
@@ -491,20 +1655,22 @@
                 const snapshot = await getDocs(chatsRef);
                 const chatListEl = document.getElementById('support-chat-list');
                 chatListEl.innerHTML = '';
+                
                 if(snapshot.empty) {
-                    chatListEl.innerHTML = '<p class="text-center p-4">لا توجد محادثات حتى الآن.</p>';
+                    chatListEl.innerHTML = '<p class="text-center p-4 text-white/80">لا توجد محادثات حتى الآن.</p>';
                     return;
                 }
+                
                 snapshot.forEach(doc => {
                     const chatData = doc.data();
                     const userEl = document.createElement('div');
-                    userEl.className = 'p-3 mb-1 bg-white rounded-md cursor-pointer hover:bg-indigo-50 flex justify-between items-center';
+                    userEl.className = 'p-3 mb-1 bg-white/10 backdrop-blur-md rounded-lg cursor-pointer hover:bg-white/20 flex justify-between items-center text-white';
                     userEl.innerHTML = `<span>${chatData.userEmail || doc.id}</span>`;
                     userEl.addEventListener('click', () => showUserChatView(doc.id, true));
                     chatListEl.appendChild(userEl);
                 });
             } catch(error) {
-                 document.getElementById('support-chat-list').innerHTML = '<p class="text-center p-4 text-red-500">فشل تحميل المحادثات.</p>';
+                 document.getElementById('support-chat-list').innerHTML = '<p class="text-center p-4 text-red-400">فشل تحميل المحادثات.</p>';
             }
         }
 
@@ -512,15 +1678,15 @@
             currentChatTarget = userId;
             const chatPage = pageContainers.chat;
             chatPage.innerHTML = `
-                <header class="flex items-center p-4 border-b">
-                    <button id="chat-back-btn" class="p-2 rounded-full hover:bg-gray-200 ml-4"><i data-lucide="arrow-right" class="w-6 h-6"></i></button>
-                    <h2 class="text-xl font-bold">${isSupportView ? 'محادثة المستخدم' : 'الدعم الفني'}</h2>
+                <header class="flex items-center p-4 border-b border-white/20">
+                    <button id="chat-back-btn" class="p-2 rounded-full hover:bg-white/20 ml-4 text-white"><i data-lucide="arrow-right" class="w-6 h-6"></i></button>
+                    <h2 class="text-xl font-bold text-white">${isSupportView ? 'محادثة المستخدم' : 'الدعم الفني'}</h2>
                 </header>
-                <div id="chat-messages" class="flex-grow p-4 overflow-y-auto bg-gray-100 space-y-4"></div>
-                <div class="p-4 bg-white border-t space-y-2">
+                <div id="chat-messages" class="flex-grow p-4 overflow-y-auto space-y-4"></div>
+                <div class="p-4 bg-white/10 backdrop-blur-md border-t border-white/20 space-y-2">
                     <div class="flex space-x-2 space-x-reverse">
-                        <input type="text" id="chat-message-input" placeholder="اكتب رسالتك..." class="flex-grow px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                        <button id="send-chat-message-btn" class="bg-indigo-600 text-white p-3 rounded-md hover:bg-indigo-700"><i data-lucide="send" class="w-5 h-5"></i></button>
+                        <input type="text" id="chat-message-input" placeholder="اكتب رسالتك..." class="flex-grow px-4 py-3 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white/10 backdrop-blur-md text-white placeholder-white/60">
+                        <button id="send-chat-message-btn" class="bg-indigo-600 text-white p-3 rounded-lg hover:bg-indigo-700"><i data-lucide="send" class="w-5 h-5"></i></button>
                     </div>
                 </div>`;
             lucide.createIcons();
@@ -528,13 +1694,14 @@
             document.getElementById('chat-back-btn').addEventListener('click', () => {
                 isSupportView ? showSupportChatList() : showPage('dashboard', auth.currentUser);
             });
+            
             const messageInput = document.getElementById('chat-message-input');
             document.getElementById('send-chat-message-btn').addEventListener('click', () => {
-                if(messageInput.value) { sendMessage(messageInput.value); messageInput.value = ''; }
+                if(messageInput.value) { sendMessage(messageInput.value); messageInput.value = ''; } 
             });
             messageInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
-                    if(messageInput.value) { sendMessage(messageInput.value); messageInput.value = ''; }
+                    if(messageInput.value) { sendMessage(messageInput.value); messageInput.value = ''; } 
                 }
             });
             
@@ -547,7 +1714,7 @@
                     const messageEl = document.createElement('div');
                     const isMe = message.senderId === auth.currentUser.uid;
                     messageEl.className = `flex flex-col ${isMe ? 'items-end' : 'items-start'}`;
-                    messageEl.innerHTML = `<div class="p-3 rounded-lg max-w-xs ${isMe ? 'bg-indigo-500 text-white' : 'bg-white shadow-sm'}">${message.text}</div>`;
+                    messageEl.innerHTML = `<div class="p-3 rounded-lg max-w-xs ${isMe ? 'bg-indigo-500 text-white' : 'bg-white/20 backdrop-blur-md text-white shadow-sm'}">${message.text}</div>`;
                     messagesContainer.appendChild(messageEl);
                 });
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
@@ -567,26 +1734,320 @@
                     timestamp: serverTimestamp()
                 });
                 const chatDocRef = doc(db, "chats", chatId);
-                await setDoc(chatDocRef, { userEmail: user.email === ADMIN_EMAIL ? (await getDoc(doc(db, "users", chatId))).data().email : user.email, lastUpdate: serverTimestamp() }, { merge: true });
+                await setDoc(chatDocRef, { 
+                    userEmail: user.email === ADMIN_EMAIL ? (await getDoc(doc(db, "users", chatId))).data().email : user.email, 
+                    lastUpdate: serverTimestamp() 
+                }, { merge: true });
              } catch (error) {
                 console.error("Error sending message: ", error);
                 showToast("فشل إرسال الرسالة", true);
              }
         }
+
+        // --- EVENT LISTENERS ---
         
-        // --- UI & EVENT LISTENERS ---
+        // Login/Logout
+        showLoginFormBtn.addEventListener('click', () => { 
+            loginPrompt.classList.add('hidden'); 
+            loginForm.classList.remove('hidden'); 
+        });
+        document.getElementById('logout-btn').addEventListener('click', () => { 
+            loadingOverlay.classList.remove('hidden'); 
+            signOut(auth); 
+        });
+
+        // Navigation
         document.getElementById('back-to-dashboard-btn').addEventListener('click', () => showPage('dashboard', auth.currentUser));
         document.querySelectorAll('.back-btn').forEach(btn => btn.addEventListener('click', () => showPage('dashboard', auth.currentUser)));
-        showLoginFormBtn.addEventListener('click', () => { loginPrompt.classList.add('hidden'); loginForm.classList.remove('hidden'); });
+
+        // Sidebar
+        document.getElementById('sidebar-toggle-btn').addEventListener('click', (e) => { 
+            e.stopPropagation(); 
+            sidebar.classList.toggle('translate-x-full'); 
+            sidebarOverlay.classList.toggle('hidden'); 
+        });
+        sidebarOverlay.addEventListener('click', closeSidebar);
+        function closeSidebar() { 
+            sidebar.classList.add('translate-x-full'); 
+            sidebarOverlay.classList.add('hidden'); 
+        }
+
+        // Page buttons
         document.getElementById('wallet-btn').addEventListener('click', () => showPage('wallet'));
+        document.getElementById('social-apps-btn').addEventListener('click', () => showPage('socialApps'));
+        document.getElementById('change-password-btn').addEventListener('click', () => showPage('changePassword'));
         document.getElementById('chat-btn').addEventListener('click', () => showPage('chat'));
         document.getElementById('charge-balance-btn').addEventListener('click', () => showPage('chat'));
-        document.getElementById('sidebar-toggle-btn').addEventListener('click', (e) => { e.stopPropagation(); sidebar.classList.toggle('translate-x-full'); sidebarOverlay.classList.toggle('hidden'); });
-        sidebarOverlay.addEventListener('click', closeSidebar);
-        function closeSidebar() { sidebar.classList.add('translate-x-full'); sidebarOverlay.classList.add('hidden'); }
-        function showLightbox(contentHTML) { lightboxContent.innerHTML = contentHTML; lightboxOverlay.classList.remove('hidden'); }
-        lightboxOverlay.addEventListener('click', () => { lightboxOverlay.classList.add('hidden'); lightboxContent.innerHTML = ''; });
-        
+        document.getElementById('cart-btn').addEventListener('click', () => showPage('cart'));
+
+        // Admin functions
+        document.getElementById('admin-charge-btn').addEventListener('click', async () => {
+            const identifier = document.getElementById('admin-user-identifier').value.trim();
+            const amount = parseFloat(document.getElementById('admin-charge-amount').value);
+
+            if (!identifier || !amount || amount <= 0) {
+                showToast("الرجاء إدخال جميع الحقول بشكل صحيح.", true);
+                return;
+            }
+            
+            loadingOverlay.classList.remove('hidden');
+            
+            try {
+                const result = await chargeUserBalance(identifier, amount);
+                showToast(`تم شحن رصيد ${result.email} بنجاح!`);
+                document.getElementById('admin-user-identifier').value = '';
+                document.getElementById('admin-charge-amount').value = '';
+            } catch (error) {
+                console.error("Balance charge error:", error);
+                showToast(error.message || "حدث خطأ أثناء عملية الشحن.", true);
+            } finally {
+                loadingOverlay.classList.add('hidden');
+            }
+        });
+
+        // Add agent
+        document.getElementById('add-agent-btn').addEventListener('click', async () => {
+            const email = document.getElementById('agent-email').value.trim();
+            if (!email) {
+                showToast('الرجاء إدخال البريد الإلكتروني', true);
+                return;
+            }
+            
+            try {
+                const usersQuery = query(collection(db, 'users'), where('email', '==', email));
+                const snapshot = await getDocs(usersQuery);
+                
+                if (snapshot.empty) {
+                    showToast('المستخدم غير موجود', true);
+                    return;
+                }
+                
+                const userDoc = snapshot.docs[0];
+                await updateDoc(doc(db, 'users', userDoc.id), { isAgent: true });
+                
+                document.getElementById('agent-email').value = '';
+                loadAgentsList();
+                showToast('تم إضافة وكيل الشحن بنجاح');
+            } catch (error) {
+                console.error('Error adding agent:', error);
+                showToast('حدث خطأ أثناء إضافة الوكيل', true);
+            }
+        });
+
+        // Add merchant
+        document.getElementById('add-merchant-btn').addEventListener('click', async () => {
+            const email = document.getElementById('merchant-email').value.trim();
+            if (!email) {
+                showToast('الرجاء إدخال البريد الإلكتروني', true);
+                return;
+            }
+            
+            try {
+                const usersQuery = query(collection(db, 'users'), where('email', '==', email));
+                const snapshot = await getDocs(usersQuery);
+                
+                if (snapshot.empty) {
+                    showToast('المستخدم غير موجود', true);
+                    return;
+                }
+                
+                const userDoc = snapshot.docs[0];
+                await updateDoc(doc(db, 'users', userDoc.id), { isMerchant: true });
+                
+                document.getElementById('merchant-email').value = '';
+                loadMerchantsList();
+                showToast('تم إضافة التاجر بنجاح');
+            } catch (error) {
+                console.error('Error adding merchant:', error);
+                showToast('حدث خطأ أثناء إضافة التاجر', true);
+            }
+        });
+
+        // Add app
+        document.getElementById('add-app-btn').addEventListener('click', async () => {
+            const name = document.getElementById('app-name').value.trim();
+            const price = parseFloat(document.getElementById('app-price').value);
+            const icon = document.getElementById('app-icon').value.trim();
+            
+            if (!name || !price || !icon || price <= 0) {
+                showToast('الرجاء إدخال جميع البيانات بشكل صحيح', true);
+                return;
+            }
+            
+            try {
+                await addDoc(collection(db, 'socialApps'), {
+                    name: name,
+                    price: price,
+                    icon: icon,
+                    createdAt: serverTimestamp()
+                });
+                
+                document.getElementById('app-name').value = '';
+                document.getElementById('app-price').value = '';
+                document.getElementById('app-icon').value = '';
+                
+                loadAppsList();
+                showToast('تم إضافة التطبيق بنجاح');
+            } catch (error) {
+                console.error('Error adding app:', error);
+                showToast('حدث خطأ أثناء إضافة التطبيق', true);
+            }
+        });
+
+        // Agent charge
+        document.getElementById('agent-charge-btn').addEventListener('click', async () => {
+            const identifier = document.getElementById('agent-user-identifier').value.trim();
+            const amount = parseFloat(document.getElementById('agent-charge-amount').value);
+
+            if (!identifier || !amount || amount <= 0) {
+                showToast("الرجاء إدخال جميع الحقول بشكل صحيح.", true);
+                return;
+            }
+            
+            loadingOverlay.classList.remove('hidden');
+            
+            try {
+                const result = await chargeUserBalance(identifier, amount);
+                showToast(`تم شحن رصيد ${result.email} بنجاح!`);
+                document.getElementById('agent-user-identifier').value = '';
+                document.getElementById('agent-charge-amount').value = '';
+            } catch (error) {
+                console.error("Balance charge error:", error);
+                showToast(error.message || "حدث خطأ أثناء عملية الشحن.", true);
+            } finally {
+                loadingOverlay.classList.add('hidden');
+            }
+        });
+
+        // Add banner (merchant)
+        document.getElementById('add-banner-btn').addEventListener('click', async () => {
+            const imageUrl = document.getElementById('banner-image-url').value.trim();
+            
+            if (!imageUrl) {
+                showToast('الرجاء إدخال رابط البنر', true);
+                return;
+            }
+            
+            try {
+                await addDoc(collection(db, 'content', 'banners', 'items'), {
+                    title: 'بنر داخلي',
+                    url: imageUrl,
+                    price: 0,
+                    type: 'image',
+                    merchantId: currentUser.uid,
+                    createdAt: serverTimestamp()
+                });
+                
+                document.getElementById('banner-image-url').value = '';
+                showToast('تم إضافة البنر بنجاح');
+            } catch (error) {
+                console.error('Error adding banner:', error);
+                showToast('حدث خطأ أثناء إضافة البنر', true);
+            }
+        });
+
+        // Add video banner
+        document.getElementById('add-video-banner-btn').addEventListener('click', async () => {
+            const videoUrl = document.getElementById('video-banner-url').value.trim();
+            
+            if (!videoUrl) {
+                showToast('الرجاء إدخال رابط الفيديو', true);
+                return;
+            }
+            
+            try {
+                await addDoc(collection(db, 'videoBanners'), {
+                    url: videoUrl,
+                    title: 'بنر فيديو',
+                    createdAt: serverTimestamp()
+                });
+                
+                document.getElementById('video-banner-url').value = '';
+                showToast('تم إضافة بنر الفيديو بنجاح');
+            } catch (error) {
+                console.error('Error adding video banner:', error);
+                showToast('حدث خطأ أثناء إضافة بنر الفيديو', true);
+            }
+        });
+
+        // Change password
+        document.getElementById('change-password-btn').addEventListener('click', async () => {
+            const currentPassword = document.getElementById('current-password').value;
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                showToast('الرجاء إدخال جميع الحقول', true);
+                return;
+            }
+            
+            // Only allow admin to change password
+            if (currentUser.email !== ADMIN_EMAIL) {
+                showToast('تغيير كلمة المرور متاح للحساب الرسمي فقط', true);
+                return;
+            }
+            
+            // Check if current password matches the admin password
+            if (currentPassword !== ADMIN_PASSWORD) {
+                showToast('كلمة المرور الحالية غير صحيحة. يجب إدخال 561889', true);
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                showToast('كلمة المرور الجديدة غير متطابقة', true);
+                return;
+            }
+            
+            if (newPassword.length < 6) {
+                showToast('كلمة المرور يجب أن تكون 6 أحرف على الأقل', true);
+                return;
+            }
+            
+            loadingOverlay.classList.remove('hidden');
+            
+            try {
+                const user = auth.currentUser;
+                
+                // For admin account, we need to use the original password for reauthentication
+                const credential = EmailAuthProvider.credential(user.email, ADMIN_PASSWORD);
+                await reauthenticateWithCredential(user, credential);
+                await updatePassword(user, newPassword);
+                
+                // Update the ADMIN_PASSWORD constant for future use
+                // Note: In a real application, this should be handled more securely
+                
+                document.getElementById('current-password').value = '';
+                document.getElementById('new-password').value = '';
+                document.getElementById('confirm-password').value = '';
+                
+                showToast('تم تغيير كلمة المرور بنجاح');
+            } catch (error) {
+                console.error('Error changing password:', error);
+                if (error.code === 'auth/wrong-password') {
+                    showToast('كلمة المرور الحالية غير صحيحة', true);
+                } else {
+                    showToast('فشل في تغيير كلمة المرور. حاول مرة أخرى', true);
+                }
+            } finally {
+                loadingOverlay.classList.add('hidden');
+            }
+        });
+
+        // Modal events
+        document.getElementById('modal-cancel-btn').addEventListener('click', () => {
+            document.getElementById('app-charge-modal').classList.add('hidden');
+        });
+
+        // Lightbox
+        function showLightbox(contentHTML) { 
+            lightboxContent.innerHTML = contentHTML; 
+            lightboxOverlay.classList.remove('hidden'); 
+        }
+        lightboxOverlay.addEventListener('click', () => { 
+            lightboxOverlay.classList.add('hidden'); 
+            lightboxContent.innerHTML = ''; 
+        });
+
         // --- INITIALIZATION ---
         loadingOverlay.classList.remove('hidden');
         lucide.createIcons();
